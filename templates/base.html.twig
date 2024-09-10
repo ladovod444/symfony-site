@@ -1,17 +1,90 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-        {% block stylesheets %}
-        {% endblock %}
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Welcome!{% endblock %}</title>
+    <link rel="icon"
+          href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+    {% block stylesheets %}
+        <link rel="stylesheet" href="{{ asset('app.css') }}">
+    {% endblock %}
 
-        {% block javascripts %}
-            {% block importmap %}{{ importmap('app') }}{% endblock %}
-        {% endblock %}
-    </head>
-    <body>
-        {% block body %}{% endblock %}
-    </body>
+    {% block javascripts %}
+        {% block importmap %}{{ importmap('app') }}{% endblock %}
+    {% endblock %}
+</head>
+<body>
+<header>
+    <h1><a href="{{ path('homepage') }}">Guestbook</a></h1>
+    <ul>
+{#        {% for conference in conferences %}#}
+{#            <li><a href="{{ path('conference', { id: conference.id }) }}">{{ conference }}</a></li>#}
+{#        {% endfor %}#}
+    </ul>
+    <hr/>
+</header>
+
+{% block body %}{% endblock %}
+{% block footer %}
+    <footer id="footer">
+
+        <div class="footer-flex">
+            <div class="footer-item col1">
+                <p class="title-footer">О нас</p>
+
+                <nav>
+                    <ul>
+                        <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-387">
+                            <a target="_self" href="https://wp-ddev.ddev.site/our-company/">Компания</a>
+                        </li>
+                        <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-388">
+                            <a target="_self" href="https://wp-ddev.ddev.site/job-vacancies/">Вакансии</a>
+                        </li>
+                        <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-392">
+                            <a target="_self" href="https://wp-ddev.ddev.site/callaborations/">Коллаборации</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="footer-item col2">
+                <p class="title-footer">Сервис</p>
+
+                <nav>
+                    <ul>
+                        <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-395">
+                            <a target="_self" href="https://wp-ddev.ddev.site/faq/">Вопрос – ответ</a>
+                        </li>
+                        <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-396">
+                            <a target="_self" href="https://wp-ddev.ddev.site/delivery-n-payment/">Доставка и оплата</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="footer-item col3">
+                <p class="title-footer">О продукции</p>
+                <nav>
+                    <ul>
+                        <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-397">
+                            <a target="_self" href="https://wp-ddev.ddev.site/features/">Особенности</a>
+                        </li>
+                        <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-400">
+                            <a target="_self" href="https://wp-ddev.ddev.site/%d0%bb%d1%83%d0%ba%d0%b1%d1%83%d0%ba/">Лукбук</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="footer-item col4">
+                <p class="title-footer">Смотрите за нами</p>
+                <p>
+                    <a href="https://vk.com/newwallet" target="_blank"><img src="/wp-content/themes/wallets/assets/images/icon-socseti-1.webp" alt=""></a>
+                    <a href="https://www.instagram.com/newwallet/" target="_blank"><img src="/wp-content/themes/wallets/assets/images/icon-socseti-2.webp" alt=""></a>
+                    <a href="https://www.facebook.com/newwalletru" target="_blank"><img src="/wp-content/themes/wallets/assets/images/icon-socseti-3.webp" alt=""></a>
+                    <a href="https://www.youtube.com/user/newwalletru" target="_blank"><img src="/wp-content/themes/wallets/assets/images/icon-socseti-4.webp" alt=""></a>
+                </p>
+            </div>
+        </div>
+        <div class="copyright">Copyright 2024</div>
+    </footer>
+{% endblock %}
+</body>
 </html>
