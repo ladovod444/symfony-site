@@ -19,3 +19,8 @@ footer a {
     display: flex;
     justify-content: space-between;
 }
+
+main {
+    max-width: 1200px;
+    margin: 0 auto;
+}

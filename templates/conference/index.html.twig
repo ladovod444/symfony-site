@@ -13,7 +13,7 @@
 
     {% for conference in conferences %}
         <p>{{ conference.id }}</p>
-        <a href="{{ path('conference', { id: conference.id }) }}">View {{ conference.city }} </a>
+        <a href="{{ path('conference', { slug: conference.slug }) }}">View {{ conference.city }} </a>
     {% endfor %}
 
 </div>
