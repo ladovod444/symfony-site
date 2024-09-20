@@ -48,8 +48,13 @@ final class BlogController extends AbstractController
     #[Route('/{id}', name: 'app_blog_show', methods: ['GET'])]
     public function show(Blog $blog): Response
     {
+        $blog_tags = [];
+        foreach ($blog->getTags() as $tag) {
+            $blog_tags[] = $tag->getName();
+        }
         return $this->render('blog/show.html.twig', [
             'blog' => $blog,
+            'blog_tags' => $blog_tags,
         ]);
     }
 

@@ -3,7 +3,9 @@
 namespace App\Entity;
 
 use App\Repository\PageRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\PersistentCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PageRepository::class)]
@@ -25,6 +27,13 @@ class Page
 
     #[ORM\Column(length: 255)]
     private ?string $author = null;
+
+    #[ORM\JoinTable(name: 'tags_to_page')]
+    #[ORM\JoinColumn(name: 'page_id', referencedColumnName: 'id')]
+    #[ORM\InverseJoinColumn(name: 'tag_id', referencedColumnName: 'id', unique: true)]
+    #[ORM\ManyToMany(targetEntity: "Tag", cascade: ['persist']),]
+
+    private ArrayCollection|PersistentCollection $tags;
 
     public function getId(): ?int
     {
@@ -78,4 +87,12 @@ class Page
 
         return $this;
     }
+
+	public function getTags() : ArrayCollection|PersistentCollection {
+		return $this->tags;
+	}
+
+	public function setTags(ArrayCollection|PersistentCollection $value) {
+		$this->tags = $value;
+	}
 }

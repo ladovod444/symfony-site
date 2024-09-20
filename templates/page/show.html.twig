@@ -27,6 +27,16 @@
                 <th>Author</th>
                 <td>{{ page.author }}</td>
             </tr>
+             <tr>
+                <th>Tags</th>
+                {# <td>{{ page.tags }}</td> #}
+                <td>{{ page_tags|join(',') }}</td> 
+                
+               {#  {% for page_tag in page.tags %}
+                {{ page_tag.name }}
+                {% endfor %} #}
+
+            </tr>
         </tbody>
     </table>
 

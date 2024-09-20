@@ -45,8 +45,15 @@ final class PageController extends AbstractController
     #[Route('/{id}', name: 'app_page_show', methods: ['GET'])]
     public function show(Page $page): Response
     {
+        //dd($page);
+        $page_tags = [];
+        foreach ($page->getTags() as $tag) {
+            $page_tags[] = $tag->getName();
+        }
+
         return $this->render('page/show.html.twig', [
             'page' => $page,
+            'page_tags' => $page_tags,
         ]);
     }
 

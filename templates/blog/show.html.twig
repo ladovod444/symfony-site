@@ -36,6 +36,17 @@
                 <td>{{ blog.blogCollection.name }}</td>
             </tr>
             {% endif %}
+
+             <tr>
+                <th>Tags</th>
+                {# <td>{{ page.tags }}</td> #}
+                <td>{{ blog_tags|join(',') }}</td> 
+                
+               {#  {% for page_tag in page.tags %}
+                {{ page_tag.name }}
+                {% endfor %} #}
+
+            </tr>
         </tbody>
     </table>
 
