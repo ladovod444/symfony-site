@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Blog;
+use App\Filter\BlogFilter;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -14,6 +15,21 @@ class BlogRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Blog::class);
+    }
+
+    /**
+     * @return Blog[] Returns an array of Blog objects
+     */
+    public function findByBlogFilter(BlogFilter $blogFilter) {
+      $blogs = $this->createQueryBuilder('b');
+      if ($blogFilter->getTitle()) {
+        $blogs->where('b.title LIKE :title')
+          ->setParameter('title', '%' . $blogFilter->getTitle() . '%');
+      }
+
+      //dd($blogs->getQuery()->getSQL());
+
+      return $blogs->getQuery()->getResult();
     }
 
     //    /**

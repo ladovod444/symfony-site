@@ -24,6 +24,25 @@ class Conference
   #[ORM\Column(length: 4)]
   private ?string $year = null;
 
+  #[ORM\Column(length: 4)]
+  private ?string $age = null;
+
+  /**
+   * @return string|null
+   */
+  public function getAge()
+  {
+    return $this->age;
+  }
+
+  /**
+   * @param string|null $age
+   */
+  public function setAge($age)
+  {
+    $this->age = $age;
+  }
+
   #[ORM\Column]
   private ?bool $isInternational = null;
 
