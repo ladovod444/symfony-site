@@ -32,6 +32,7 @@ class BlogFilterType extends AbstractType
     $builder
       ->setMethod('GET')
       ->add('title', TextType::class, ['required' => false])
+      ->add('description', TextType::class, ['required' => false])
 //      ->add('title', TextType::class, [
 //        'required' => false,
 ////        'help' => 'Заголовок поста',
@@ -39,12 +40,12 @@ class BlogFilterType extends AbstractType
 ////          'class' => 'form-control-custom',
 ////        ]
 //      ])
-      ->add('content', TextType::class, ['required' => false, 'mapped' => false])
+     // ->add('content', TextType::class, ['required' => false, 'mapped' => false])
       ->addEventListener(FormEvents::PRE_SUBMIT, function (PreSubmitEvent $event): void {
         $user = $event->getData();
         $form = $event->getForm();
 
-        dd($user);
+        //dd($user);
 
         if (!$user) {
           return;

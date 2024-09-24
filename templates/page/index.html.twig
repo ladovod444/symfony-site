@@ -3,7 +3,13 @@
 {% block title %}Page index{% endblock %}
 
 {% block body %}
-    <h1>Page index</h1>
+    <h1>Page list</h1>
+
+    <h2>Enter search data</h2>
+    {{ form_start(formSearch) }}
+    {{ form_widget(formSearch) }}
+    <button class="btn btn-primary">{{ button_label|default('Search') }}</button>
+    {{ form_end(formSearch) }}
 
     <table class="table">
         <thead>

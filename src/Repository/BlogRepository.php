@@ -22,9 +22,24 @@ class BlogRepository extends ServiceEntityRepository
      */
     public function findByBlogFilter(BlogFilter $blogFilter) {
       $blogs = $this->createQueryBuilder('b');
-      if ($blogFilter->getTitle()) {
-        $blogs->where('b.title LIKE :title')
-          ->setParameter('title', '%' . $blogFilter->getTitle() . '%');
+      if ($blogFilter->getTitle() || $blogFilter->getDescription()) {
+
+        if ($blogFilter->getTitle()) {
+          $blogs->where('b.title LIKE :title')
+            ->setParameter('title', '%' . $blogFilter->getTitle() . '%');
+        }
+        if ($blogFilter->getTitle() && $blogFilter->getDescription()) {
+          $blogs->orWhere('b.description LIKE :description')
+            ->setParameter('description', '%' . $blogFilter->getDescription() . '%');
+        }
+        if (!$blogFilter->getTitle() && $blogFilter->getDescription()) {
+          $blogs->where('b.description LIKE :description')
+            ->setParameter('description', '%' . $blogFilter->getDescription() . '%');
+        }
+
+
+
+
       }
 
       //dd($blogs->getQuery()->getSQL());

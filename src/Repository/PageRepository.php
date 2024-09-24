@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Page;
+use App\Filter\PageFilter;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,28 +17,28 @@ class PageRepository extends ServiceEntityRepository
         parent::__construct($registry, Page::class);
     }
 
-    //    /**
-    //     * @return Page[] Returns an array of Page objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('p.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+  public function findByPageFilter(PageFilter $pageFilter) {
+    $pages = $this->createQueryBuilder('p');
+    if ($pageFilter->getTitle() /*|| $blogFilter->getDescription()*/) {
+      $pages->where('p.title LIKE :title')
+        ->setParameter('title', '%' . $pageFilter->getTitle() . '%');
+    }
 
-    //    public function findOneBySomeField($value): ?Page
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+      if ($pageFilter->getTitle()) {
+        $pages->where('p.title LIKE :title')
+          ->setParameter('title', '%' . $pageFilter->getTitle() . '%');
+      }
+      if ($pageFilter->getTitle() && $pageFilter->getBody()) {
+        $pages->orWhere('p.body LIKE :body')
+          ->setParameter('body', '%' . $pageFilter->getBody() . '%');
+      }
+      if (!$pageFilter->getTitle() && $pageFilter->getBody()) {
+        $pages->where('p.body LIKE :body')
+          ->setParameter('body', '%' . $pageFilter->getBody() . '%');
+      }
+
+
+        return $pages->getQuery()->getResult();
+
+    }
 }

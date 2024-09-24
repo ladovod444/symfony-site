@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Page;
+use App\Filter\PageFilter;
+use App\Form\PageFilterType;
 use App\Form\PageType;
 use App\Repository\PageRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -15,11 +17,23 @@ use Symfony\Component\Routing\Attribute\Route;
 final class PageController extends AbstractController
 {
     #[Route(name: 'app_page_index', methods: ['GET'])]
-    public function index(PageRepository $pageRepository): Response
+    public function index(Request $request, PageRepository $pageRepository): Response
     {
-        return $this->render('page/index.html.twig', [
-            'pages' => $pageRepository->findAll(),
-        ]);
+
+      $pageFilter = new PageFilter();
+      $form = $this->createForm(PageFilterType::class, $pageFilter);
+      $form->handleRequest($request);
+
+//      if ($form->isSubmitted() && $form->isValid()) {
+//      }
+
+      return $this->render('page/index.html.twig', [
+        'pages' => $pageRepository->findByPageFilter($pageFilter),
+        'formSearch' => $form->createView(),
+      ]);
+//        return $this->render('page/index.html.twig', [
+//            'pages' => $pageRepository->findAll(),
+//        ]);
     }
 
     #[Route('/new', name: 'app_page_new', methods: ['GET', 'POST'])]

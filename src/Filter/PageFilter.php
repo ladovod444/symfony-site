@@ -2,21 +2,20 @@
 
 namespace App\Filter;
 
-class BlogFilter
+class PageFilter
 {
   public ?string $title = null;
-  public ?string $description = null;
+  public ?string $body = null;
 
-  public function getDescription(): ?string
+  public function getBody(): ?string
   {
-    return $this->description;
+    return $this->body;
   }
 
-  public function setDescription(?string $description): void
+  public function setBody(?string $body): void
   {
-    $this->description = $description;
+    $this->body = $body;
   }
-
   public function getTitle(): ?string
   {
     return $this->title;
