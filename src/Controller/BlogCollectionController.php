@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/blog/collection')]
+#[Route('/admin/blog/collection')]
 final class BlogCollectionController extends AbstractController
 {
     #[Route(name: 'app_blog_collection_index', methods: ['GET'])]

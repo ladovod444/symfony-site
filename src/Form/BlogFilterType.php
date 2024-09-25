@@ -10,6 +10,7 @@ use App\Form\DataTransformer\TagTransformer;
 use App\Repository\CategoryRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Event\PreSubmitEvent;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvents;
@@ -33,6 +34,13 @@ class BlogFilterType extends AbstractType
       ->setMethod('GET')
       ->add('title', TextType::class, ['required' => false])
       ->add('description', TextType::class, ['required' => false])
+//      ->add('roles', ChoiceType::class, [
+//        'choices' => [
+//          'ROLE_ADMIN' => 'ROLE_ADMIN',
+//          'ROLE_USER' => 'ROLE_USER',
+//        ],
+//        'mapped' => false,
+//      ])
 //      ->add('title', TextType::class, [
 //        'required' => false,
 ////        'help' => 'Заголовок поста',

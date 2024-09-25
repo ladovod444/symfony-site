@@ -8,28 +8,31 @@
     <h2>Enter search data</h2>
     {{ form_start(formSearch) }}
     {{ form_widget(formSearch) }}
-        <button class="btn btn-primary">{{ button_label|default('Search') }}</button>
+    <button class="btn btn-primary">{{ button_label|default('Search') }}</button>
     {{ form_end(formSearch) }}
 
     <table class="table">
         <thead>
-            <tr>
-                <th>Id</th>
-                <th>Title</th>
-                <th>Description</th>
-                <th>Text</th>
-                <th>Category</th>
-                <th>Blog Collection</th>
-                <th>actions</th>
-            </tr>
+        <tr>
+            <th>Id</th>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Text</th>
+            <th>Category</th>
+            <th>Blog Collection</th>
+            {% if is_granted("ROLE_ADMIN") %}
+                <th>Owner</th>
+            {% endif %}
+            <th>actions</th>
+        </tr>
         </thead>
         <tbody>
         {% for blog in blogs %}
             <tr>
                 <td>{{ blog.id }}</td>
                 <td>{{ blog.title }}</td>
-                <td>{{ blog.description }}</td>
-                <td>{{ blog.text }}</td>
+                <td>{{ blog.description|length > 100 ? blog.description|striptags|slice(0, 100) ~ '...' : blog.description|striptags }}</td>
+                <td>{{ blog.text|length > 100 ? blog.text|striptags|slice(0, 100) ~ '...' : blog.text|striptags }}</td>
                 {% if blog.category %}
                     <td>{{ blog.category.name }}</td>
                 {% else %}
@@ -40,9 +43,22 @@
                 {% else %}
                     <td>No blog collection</td>
                 {% endif %}
+
+                {% if is_granted("ROLE_ADMIN") %}
+                    <td>{{ blog.user }}</td>
+                {% endif %}
+
                 <td>
-                    <a href="{{ path('app_blog_show', {'id': blog.id}) }}">show</a>
-                    <a href="{{ path('app_blog_edit', {'id': blog.id}) }}">edit</a>
+                    {% if is_granted("ROLE_ADMIN") %}
+                        {# For admin user #}
+                        <a href="{{ path('app_blog_show', {'id': blog.id}) }}">show</a>
+                        <a href="{{ path('app_blog_edit', {'id': blog.id}) }}">edit</a>
+                    {% else %}
+                        {# For user #}
+                        <a href="{{ path('app_user_blog_show', {'id': blog.id}) }}">show</a>
+                        <a href="{{ path('app_user_blog_edit', {'id': blog.id}) }}">edit</a>
+                    {% endif %}
+
                 </td>
             </tr>
         {% else %}
@@ -52,6 +68,11 @@
         {% endfor %}
         </tbody>
     </table>
-
-    <a href="{{ path('app_blog_new') }}">Create new</a>
+    {% if is_granted("ROLE_ADMIN") %}
+        {# For admin user #}
+        <a href="{{ path('app_blog_new') }}">Create new</a>
+    {% else %}
+        {# For user #}
+        <a href="{{ path('app_user_blog_new') }}">Create new</a>
+    {% endif %}
 {% endblock %}

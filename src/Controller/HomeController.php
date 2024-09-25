@@ -8,7 +8,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class HomeController extends AbstractController
 {
-    #[Route('/', name: 'home_conference')]
+    #[Route('/old', name: 'home_conference')]
     public function index(): Response
     {
 

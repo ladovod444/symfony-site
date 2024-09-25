@@ -5,8 +5,11 @@ namespace App\Form;
 use App\Entity\Blog;
 use App\Entity\BlogCollection;
 use App\Entity\Category;
+use App\Entity\User;
 use App\Form\DataTransformer\TagTransformer;
 use App\Repository\CategoryRepository;
+use App\Repository\UserRepository;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -18,7 +21,10 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 class BlogType extends AbstractType
 {
 
-  public function __construct(private TagTransformer $tagTransformer)
+  public function __construct(
+    private readonly TagTransformer $tagTransformer,
+    private readonly Security       $security,
+  )
   {
   }
 
@@ -39,17 +45,6 @@ class BlogType extends AbstractType
         'required' => true,
       ])
       ->add('status')
-      ->add('category', EntityType::class, [
-        'class' => Category::class,
-        'query_builder' => function (CategoryRepository $repository) {
-          return $repository->createQueryBuilder('category')->orderBy('category.name', 'DESC');
-        },
-        'choice_label' => 'name',
-        'required' => false,
-        'empty_data' => null,
-        'placeholder' => '-- Выбор категории --' // Добавление "пустой" категории в список
-        //'choices' => $group->getUsers(),
-      ])
       ->add('blog_collection', EntityType::class, [
         'class' => BlogCollection::class,
         'choice_label' => 'name',
@@ -65,6 +60,34 @@ class BlogType extends AbstractType
         /* 'empty_data' => null */
         //'choices' => $group->getUsers(),
       ]);
+
+    // Разрешаем использовать категорию только админу
+    if ($this->security->isGranted('ROLE_ADMIN')) {
+      $builder->add('category', EntityType::class, [
+        'class' => Category::class,
+        'query_builder' => function (CategoryRepository $repository) {
+          return $repository->createQueryBuilder('category')->orderBy('category.name', 'DESC');
+        },
+        'choice_label' => 'name',
+        'required' => false,
+        'empty_data' => null,
+        'placeholder' => '-- Выбор категории --' // Добавление "пустой" категории в список
+        //'choices' => $group->getUsers(),
+      ])
+      ->add('user', EntityType::class, [
+        'class' => User::class,
+        'query_builder' => function (UserRepository $repository) {
+          return $repository->createQueryBuilder('user')->orderBy('user.email', 'DESC');
+        },
+        //'choice_label' => 'email', // Здесь важно исп. название св-ва для label, если не реализован метод toString
+        'choice_label' => 'getEmailFormated', // Здесь можно исп. доп метод сущности User getEmailFormated()
+        'required' => false,
+        'empty_data' => null,
+        'placeholder' => '-- Пользователь --' // Добавление "пустой" категории в список
+        //'choices' => $group->getUsers(),
+      ])
+      ;
+    }
 
     $builder->get('tags')
       ->addModelTransformer($this->tagTransformer);

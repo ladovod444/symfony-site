@@ -12,63 +12,51 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class BlogRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
-        parent::__construct($registry, Blog::class);
+  public function __construct(ManagerRegistry $registry)
+  {
+    parent::__construct($registry, Blog::class);
+  }
+
+  /**
+   * @return Blog[] Returns an array of Blog objects
+   */
+  public function findByBlogFilter(BlogFilter $blogFilter)
+  {
+    $blogs = $this->createQueryBuilder('b');
+
+    if ($blogFilter->getUser()) {
+      $blogs->andWhere('b.user = :user')
+        ->setParameter('user', $blogFilter->getUser());
     }
 
-    /**
-     * @return Blog[] Returns an array of Blog objects
-     */
-    public function findByBlogFilter(BlogFilter $blogFilter) {
-      $blogs = $this->createQueryBuilder('b');
-      if ($blogFilter->getTitle() || $blogFilter->getDescription()) {
+    if ($blogFilter->getTitle() || $blogFilter->getDescription()) {
 
-        if ($blogFilter->getTitle()) {
-          $blogs->where('b.title LIKE :title')
-            ->setParameter('title', '%' . $blogFilter->getTitle() . '%');
-        }
-        if ($blogFilter->getTitle() && $blogFilter->getDescription()) {
-          $blogs->orWhere('b.description LIKE :description')
-            ->setParameter('description', '%' . $blogFilter->getDescription() . '%');
-        }
-        if (!$blogFilter->getTitle() && $blogFilter->getDescription()) {
-          $blogs->where('b.description LIKE :description')
-            ->setParameter('description', '%' . $blogFilter->getDescription() . '%');
-        }
-
-
-
-
+      if ($blogFilter->getTitle()) {
+        $blogs->where('b.title LIKE :title')
+          ->setParameter('title', '%' . $blogFilter->getTitle() . '%');
+      }
+      if ($blogFilter->getTitle() && $blogFilter->getDescription()) {
+        $blogs->orWhere('b.description LIKE :description')
+          ->setParameter('description', '%' . $blogFilter->getDescription() . '%');
+      }
+      if (!$blogFilter->getTitle() && $blogFilter->getDescription()) {
+        $blogs->where('b.description LIKE :description')
+          ->setParameter('description', '%' . $blogFilter->getDescription() . '%');
       }
 
-      //dd($blogs->getQuery()->getSQL());
-
-      return $blogs->getQuery()->getResult();
     }
 
-    //    /**
-    //     * @return Blog[] Returns an array of Blog objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('b')
-    //            ->andWhere('b.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('b.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    //dd($blogs->getQuery()->getSQL());
 
-    //    public function findOneBySomeField($value): ?Blog
-    //    {
-    //        return $this->createQueryBuilder('b')
-    //            ->andWhere('b.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    return $blogs->getQuery()->getResult();
+  }
+
+  public function getBlogs()
+  {
+    return $this->createQueryBuilder('b')
+      ->setMaxResults(6)
+      ->getQuery()
+      ->getResult();
+  }
+
 }

@@ -24,3 +24,14 @@ main {
     max-width: 1200px;
     margin: 0 auto;
 }
+
+.container.blogs {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.container.blogs .blog-item {
+    /*flex: 1;*/
+    width: 32%;
+}

@@ -8,6 +8,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\PersistentCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\BooleanConfigurator;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: BlogRepository::class)]
@@ -35,6 +36,24 @@ class Blog
   #[ORM\ManyToOne(targetEntity: Category::class)]
   #[ORM\JoinColumn(name: 'category_id', referencedColumnName: 'id')]
   private Category|null $category = null;
+
+  #[ORM\ManyToOne(targetEntity: User::class)]
+  #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')]
+  private User|null $user = null;
+
+  public function __construct(UserInterface|User $user) {
+    $this->user = $user;
+  }
+
+  public function getUser(): ?User
+  {
+    return $this->user;
+  }
+
+  public function setUser(?User $user): void
+  {
+    $this->user = $user;
+  }
 
 
   #[ORM\ManyToOne(targetEntity: BlogCollection::class)]

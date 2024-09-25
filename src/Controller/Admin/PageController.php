@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Admin;
 
 use App\Entity\Page;
 use App\Filter\PageFilter;
@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/page')]
+#[Route('/admin/page')]
 final class PageController extends AbstractController
 {
     #[Route(name: 'app_page_index', methods: ['GET'])]
