@@ -33,7 +33,7 @@ class Page
   #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')]
   private User|null $user = null;
 
-  public function __construct(UserInterface|User $user) {
+  public function __construct(UserInterface|User|null $user) {
     $this->user = $user;
   }
 

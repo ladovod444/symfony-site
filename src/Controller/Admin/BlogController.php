@@ -8,6 +8,7 @@ use App\Form\BlogFilterType;
 use App\Form\BlogType;
 use App\Repository\BlogRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,7 +20,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 final class BlogController extends AbstractController
 {
   #[Route(name: 'app_blog_index', methods: ['GET'])]
-  public function index(Request $request, BlogRepository $blogRepository): Response
+  public function index(Request $request, BlogRepository $blogRepository, PaginatorInterface $paginator,): Response
   {
 
     //dd($blogRepository->findAll());
@@ -28,14 +29,16 @@ final class BlogController extends AbstractController
     $form->handleRequest($request);
     //dd($blogFilter);
 
-    if ($form->isSubmitted() && $form->isValid()) {
-      //dd($blogFilter);
-//      dd($blogFilter);
-//      dd($form->get('content'));
-    }
+    $pagination = $paginator->paginate(
+      //$query, /* query NOT result */
+      $blogRepository->findByBlogFilter($blogFilter),
+      $request->query->getInt('page', 1), /*page number*/
+      5 /*limit per page*/
+    );
 
     return $this->render('blog/index.html.twig', [
-      'blogs' => $blogRepository->findByBlogFilter($blogFilter),
+      //'blogs' => $blogRepository->findByBlogFilter($blogFilter),
+      'pagination' => $pagination,
       'formSearch' => $form->createView(),
     ]);
   }
