@@ -50,8 +50,6 @@
         </tbody>
     </table>
 
-
-
     {% if is_granted("ROLE_ADMIN") %}
         <a href="{{ path('app_blog_index') }}">back to list</a>
         <a href="{{ path('app_blog_edit', {'id': blog.id}) }}">edit</a>

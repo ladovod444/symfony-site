@@ -2,19 +2,20 @@
 
 namespace App\Security;
 
-use App\Entity\Blog;
+use App\Entity\Page;
 use App\Entity\User;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
-class BlogVoter extends Voter
+class PageVoter extends Voter
 {
   // these strings are just invented: you can use anything
   const VIEW = 'view';
   const EDIT = 'edit';
 
-  public function __construct(private Security $security) {
+  public function __construct(private Security $security)
+  {
 
   }
 
@@ -26,7 +27,7 @@ class BlogVoter extends Voter
     }
 
     // only vote on `Blog` objects
-    if (!$subject instanceof Blog) {
+    if (!$subject instanceof Page) {
       return false;
     }
 
@@ -43,21 +44,21 @@ class BlogVoter extends Voter
     }
 
     // you know $subject is a Blog object, thanks to `supports()`
-    /** @var Blog $blog */
-    $blog = $subject;
+    /** @var Page $page */
+    $page = $subject;
 
-    return match($attribute) {
-      self::VIEW => $this->canView($blog, $user),
-      self::EDIT => $this->canEdit($blog, $user),
+    return match ($attribute) {
+      self::VIEW => $this->canView($page, $user),
+      self::EDIT => $this->canEdit($page, $user),
       default => throw new \LogicException('This code should not be reached!')
     };
   }
 
-  private function canView(Blog $blog, User $user): bool
+  private function canView(Page $page, User $user): bool
   {
     //return false;
     // if they can edit, they can view
-    if ($this->canEdit($blog, $user)) {
+    if ($this->canEdit($page, $user)) {
       return true;
     }
 
@@ -66,15 +67,13 @@ class BlogVoter extends Voter
     return true;
   }
 
-  private function canEdit(Blog $blog, User $user): bool
+  private function canEdit(Page $page, User $user): bool
   {
-    // Нужно чтобы админ имел права на редактирование всех постов
+    // Нужно чтобы админ имел права на редактирование всех cтраниц
     if ($this->security->isGranted('ROLE_ADMIN')) {
       return true;
     }
-    //return true;
-    //return false;
     // this assumes that the Blog object has a `getUser()` method
-    return $user === $blog->getUser();
+    return $user === $page->getUser();
   }
 }

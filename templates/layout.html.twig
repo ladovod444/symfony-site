@@ -123,8 +123,17 @@
                         <li class="nav-item"><a class="nav-link" href="{{ path('app_default_home') }}">Home</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{ path('app_logout') }}">Logout</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{ path('app_user_index') }}">Users</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ path('app_blog_index') }}">Blogs</a></li>
+                        {% if is_granted("ROLE_ADMIN") %}
+                            <li class="nav-item"><a class="nav-link" href="{{ path('app_blog_index') }}">Blogs</a></li>
+                            {% else %}
+                                <li class="nav-item"><a class="nav-link" href="{{ path('app_user_blog_index') }}">Blogs</a></li>
+                        {% endif %}
+
+                        {% if is_granted("ROLE_ADMIN") %}
                         <li class="nav-item"><a class="nav-link" href="{{ path('app_page_index') }}">Pages</a></li>
+                            {% else %}
+                                <li class="nav-item"><a class="nav-link" href="{{ path('app_user_page_index') }}">Pages</a></li>
+                        {% endif %}
 
                         {% if is_granted("ROLE_ADMIN") %}
 

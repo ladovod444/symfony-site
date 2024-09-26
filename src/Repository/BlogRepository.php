@@ -24,10 +24,6 @@ class BlogRepository extends ServiceEntityRepository
   {
     $blogs = $this->createQueryBuilder('b');
 
-    if ($blogFilter->getUser()) {
-      $blogs->andWhere('b.user = :user')
-        ->setParameter('user', $blogFilter->getUser());
-    }
 
     if ($blogFilter->getTitle() || $blogFilter->getDescription()) {
 
@@ -45,6 +41,12 @@ class BlogRepository extends ServiceEntityRepository
       }
 
     }
+
+    if ($blogFilter->getUser()) {
+      $blogs->andWhere('b.user = :user')
+        ->setParameter('user', $blogFilter->getUser());
+    }
+
 
     //dd($blogs->getQuery()->getSQL());
 

@@ -39,7 +39,7 @@ final class PageController extends AbstractController
     #[Route('/new', name: 'app_page_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $page = new Page();
+        $page = new Page($this->getUser());
         $form = $this->createForm(PageType::class, $page);
         $form->handleRequest($request);
 
