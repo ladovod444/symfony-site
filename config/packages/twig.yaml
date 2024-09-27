@@ -3,6 +3,11 @@ twig:
 
     form_themes: ['bootstrap_5_layout.html.twig']
 
+    globals:
+        weather: '@App\Service\WeatherService'
+
 when@test:
     twig:
         strict_variables: true
+
+

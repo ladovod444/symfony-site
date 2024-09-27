@@ -31,7 +31,6 @@ class BlogRepository extends ServiceEntityRepository
                                                                                      // здесь именно
                                                                                  // связанная сущность user
 
-
     if ($blogFilter->getTitle() || $blogFilter->getDescription()) {
 
       if ($blogFilter->getTitle()) {

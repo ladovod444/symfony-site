@@ -7,6 +7,7 @@ use App\Filter\BlogFilter;
 use App\Form\BlogFilterType;
 use App\Form\BlogType;
 use App\Repository\BlogRepository;
+use App\Service\CheckUniqueText;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,7 +21,10 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 final class BlogController extends AbstractController
 {
   #[Route(name: 'app_blog_index', methods: ['GET'])]
-  public function index(Request $request, BlogRepository $blogRepository, PaginatorInterface $paginator,): Response
+  public function index(Request            $request,
+                        BlogRepository     $blogRepository,
+                        PaginatorInterface $paginator,
+  ): Response
   {
 
     //dd($blogRepository->findAll());
@@ -30,7 +34,7 @@ final class BlogController extends AbstractController
     //dd($blogFilter);
 
     $pagination = $paginator->paginate(
-      //$query, /* query NOT result */
+    //$query, /* query NOT result */
       $blogRepository->findByBlogFilter($blogFilter),
       $request->query->getInt('page', 1), /*page number*/
       5 /*limit per page*/
@@ -44,7 +48,7 @@ final class BlogController extends AbstractController
   }
 
   #[Route('/new', name: 'app_blog_new', methods: ['GET', 'POST'])]
-  public function new(Request $request, EntityManagerInterface $entityManager): Response
+  public function new(Request $request, EntityManagerInterface $entityManager, CheckUniqueText $checkUniqueText): Response
   {
     $blog = new Blog($this->getUser());
     $form = $this->createForm(BlogType::class, $blog);
@@ -54,6 +58,12 @@ final class BlogController extends AbstractController
       $entityManager->persist($blog);
       $entityManager->flush();
 
+      // TODO проверка уникальности пока здесь далее будет перенесена в очередь,
+      // поскольку метод checkUniqueText использует curl и может быть причиной замедления 
+      $unique_percent = $checkUniqueText->checkUniqueText($blog->getDescription());
+      $blog->setPercent($unique_percent);
+
+      $entityManager->flush();
       return $this->redirectToRoute('app_blog_index', [], Response::HTTP_SEE_OTHER);
     }
 

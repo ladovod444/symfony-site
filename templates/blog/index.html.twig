@@ -19,6 +19,7 @@
             <th>Description</th>
             <th>Text</th>
             <th>Category</th>
+            <th>Percent Uniqueness</th>
             <th>Blog Collection</th>
             {% if is_granted("ROLE_ADMIN") %}
                 <th>Owner</th>
@@ -38,6 +39,7 @@
                 {% else %}
                     <td>No category</td>
                 {% endif %}
+                <td>{{ blog.percent }}</td>
                 {% if blog.blogCollection %}
                     <td>{{ blog.blogCollection.name }}</td>
                 {% else %}

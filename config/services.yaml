@@ -20,6 +20,12 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
+    App\Service\CheckUniqueText:
+        $key: '%env(CONTENT_WATCH_API_KEY)%'
+        $translator: '@translator'
+
+    App\Service\WeatherService:
+        $api_url: '%env(WEATHER_SERVICE_URL)%'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

@@ -8,6 +8,7 @@ use App\Form\PageFilterType;
 use App\Form\PageType;
 use App\Repository\PageRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,18 +19,26 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 final class PageController extends AbstractController
 {
   #[Route(name: 'app_user_page_index', methods: ['GET'])]
-  public function index(Request $request, PageRepository $pageRepository): Response
+  public function index(Request $request, PageRepository $pageRepository, PaginatorInterface $paginator): Response
   {
 
     $pageFilter = new PageFilter($this->getUser());
     $form = $this->createForm(PageFilterType::class, $pageFilter);
     $form->handleRequest($request);
 
+    $pagination = $paginator->paginate(
+    //$query, /* query NOT result */
+      $pageRepository->findByPageFilter($pageFilter),
+      $request->query->getInt('page', 1), /*page number*/
+      5 /*limit per page*/
+    );
+
 //      if ($form->isSubmitted() && $form->isValid()) {
 //      }
 
     return $this->render('page/index.html.twig', [
-      'pages' => $pageRepository->findByPageFilter($pageFilter),
+      //'pages' => $pageRepository->findByPageFilter($pageFilter),
+      'pagination' => $pagination,
       'formSearch' => $form->createView(),
     ]);
 //        return $this->render('page/index.html.twig', [

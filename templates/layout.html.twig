@@ -146,9 +146,18 @@
                         {% endif %}
                     </ul>
                 </div>
+
+                <div class="weather">
+                    {% if weather.getWeather() %}
+                     {{ weather.getWeather().current.temperature_2m }} &deg;C
+                    {% endif %}
+                </div>
+
             </div>
 
+
         </nav>
+
 
 
     {#    <ul> #}
@@ -156,7 +165,9 @@
     {#            <li><a href="{{ path('conference', { slug: conference.slug }) }}">{{ conference }}</a></li> #}
     {#        {% endfor %} #}
     {#    </ul> #}
+
     <hr/>
+
 </header>
 <main>
     {% block body %}{% endblock %}

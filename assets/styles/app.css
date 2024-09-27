@@ -1,18 +1,23 @@
+:root {
+    --color-text: #fcfcfd;
+    --color-bg: #0a0a0a;
+}
+
 * {
     box-sizing: border-box;
 }
 
 
 body {
-    background-color: #fcfcfd;
+    background-color: var(--color-text);
 }
 
 footer {
-    background-color: #0a0a0a;
+    background-color: var(--color-bg);
 }
 
 footer a {
-    color: #fcfcfd;
+    color: var(--color-text);
 }
 
 .footer-flex {
@@ -34,4 +39,8 @@ main {
 .container.blogs .blog-item {
     /*flex: 1;*/
     width: 32%;
+}
+
+.weather {
+    color: var(--color-text);
 }

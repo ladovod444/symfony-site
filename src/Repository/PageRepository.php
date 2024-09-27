@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Page;
+use App\Entity\User;
 use App\Filter\PageFilter;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -20,6 +21,11 @@ class PageRepository extends ServiceEntityRepository
   public function findByPageFilter(PageFilter $pageFilter)
   {
     $pages = $this->createQueryBuilder('p');
+
+    $pages->leftJoin(User::class, 'u', 'WITH', 'u.id = p.user');
+                                                                                  // здесь именно
+                                                                                  // связанная сущность user
+
 
     if ($pageFilter->getTitle() /*|| $blogFilter->getDescription()*/) {
       $pages->where('p.title LIKE :title')
@@ -40,7 +46,8 @@ class PageRepository extends ServiceEntityRepository
         ->setParameter('user', $pageFilter->getUser());
     }
 
-    return $pages->getQuery()->getResult();
+    //return $pages->getQuery()->getResult();
+    return $pages;
 
   }
 }

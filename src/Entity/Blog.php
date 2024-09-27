@@ -41,6 +41,10 @@ class Blog
   #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')]
   private User|null $user = null;
 
+//  #[Assert\NotBlank]
+  #[ORM\Column(type: Types::SMALLINT, nullable: true)]
+  private ?string $percent = null;
+
   public function __construct(UserInterface|User $user) {
     $this->user = $user;
   }
@@ -119,6 +123,16 @@ class Blog
     $this->status = $status;
 
     return $this;
+  }
+
+  public function getPercent(): ?string
+  {
+    return $this->percent;
+  }
+
+  public function setPercent(?string $percent): void
+  {
+    $this->percent = $percent;
   }
 
   public function getCategory(): ?Category
