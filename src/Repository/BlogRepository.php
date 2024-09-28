@@ -53,6 +53,8 @@ class BlogRepository extends ServiceEntityRepository
         ->setParameter('user', $blogFilter->getUser());
     }
 
+    $blogs->orderBy('b.id', 'DESC');
+
 
     //dd($blogs->getQuery()->getSQL());
 

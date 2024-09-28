@@ -6,6 +6,8 @@ use App\Entity\Blog;
 use App\Filter\BlogFilter;
 use App\Form\BlogFilterType;
 use App\Form\BlogType;
+use App\Message\CheckUniqueTextJob;
+use App\MessageHandler\CheckUniqueTextJobHandler;
 use App\Repository\BlogRepository;
 use App\Service\CheckUniqueText;
 use Doctrine\ORM\EntityManagerInterface;
@@ -13,6 +15,7 @@ use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -48,7 +51,10 @@ final class BlogController extends AbstractController
   }
 
   #[Route('/new', name: 'app_blog_new', methods: ['GET', 'POST'])]
-  public function new(Request $request, EntityManagerInterface $entityManager, CheckUniqueText $checkUniqueText): Response
+  public function new(Request $request,
+                      EntityManagerInterface $entityManager,
+                      /*CheckUniqueText $checkUniqueText*/
+                      MessageBusInterface $bus): Response
   {
     $blog = new Blog($this->getUser());
     $form = $this->createForm(BlogType::class, $blog);
@@ -59,9 +65,11 @@ final class BlogController extends AbstractController
       $entityManager->flush();
 
       // TODO проверка уникальности пока здесь далее будет перенесена в очередь,
-      // поскольку метод checkUniqueText использует curl и может быть причиной замедления 
-      $unique_percent = $checkUniqueText->checkUniqueText($blog->getDescription());
-      $blog->setPercent($unique_percent);
+      // поскольку метод checkUniqueText использует curl и может быть причиной замедления
+//      $unique_percent = $checkUniqueText->checkUniqueText($blog->getDescription());
+//      $blog->setPercent($unique_percent);
+
+      $bus->dispatch(new CheckUniqueTextJob($blog->getId()));
 
       $entityManager->flush();
       return $this->redirectToRoute('app_blog_index', [], Response::HTTP_SEE_OTHER);
