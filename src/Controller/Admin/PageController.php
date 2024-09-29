@@ -6,12 +6,14 @@ use App\Entity\Page;
 use App\Filter\PageFilter;
 use App\Form\PageFilterType;
 use App\Form\PageType;
+use App\Message\SetStatusMessage;
 use App\Repository\PageRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/admin/page')]
@@ -46,7 +48,7 @@ final class PageController extends AbstractController
     }
 
     #[Route('/new', name: 'app_page_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, MessageBusInterface $bus): Response
     {
         $page = new Page($this->getUser());
         $form = $this->createForm(PageType::class, $page);
@@ -55,6 +57,9 @@ final class PageController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($page);
             $entityManager->flush();
+
+            $bus->dispatch(new SetStatusMessage($page->getId()));
+
 
             return $this->redirectToRoute('app_page_index', [], Response::HTTP_SEE_OTHER);
         }

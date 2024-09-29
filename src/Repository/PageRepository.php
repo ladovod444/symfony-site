@@ -25,8 +25,6 @@ class PageRepository extends ServiceEntityRepository
     $pages->leftJoin(User::class, 'u', 'WITH', 'u.id = p.user');
                                                                                   // здесь именно
                                                                                   // связанная сущность user
-
-
     if ($pageFilter->getTitle() /*|| $blogFilter->getDescription()*/) {
       $pages->where('p.title LIKE :title')
         ->setParameter('title', '%' . $pageFilter->getTitle() . '%');
@@ -45,6 +43,8 @@ class PageRepository extends ServiceEntityRepository
       $pages->andWhere('p.user = :user')
         ->setParameter('user', $pageFilter->getUser());
     }
+
+    $pages->orderBy('p.id', 'DESC');
 
     //return $pages->getQuery()->getResult();
     return $pages;
