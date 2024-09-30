@@ -69,6 +69,7 @@ final class BlogController extends AbstractController
 //      $unique_percent = $checkUniqueText->checkUniqueText($blog->getDescription());
 //      $blog->setPercent($unique_percent);
 
+      // ВРЕМЕННО закомментить
       $bus->dispatch(new CheckUniqueTextJob($blog->getId()));
 
       $entityManager->flush();

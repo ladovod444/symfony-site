@@ -4,10 +4,12 @@ namespace App\Entity;
 
 use App\Repository\BlogCollectionRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity(repositoryClass: BlogCollectionRepository::class)]
 class BlogCollection
 {
+  use TimestampableEntity;
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

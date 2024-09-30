@@ -11,6 +11,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\HasLifecycleCallbacks]
 class Comment
 {
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

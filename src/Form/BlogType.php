@@ -11,12 +11,14 @@ use App\Repository\CategoryRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Validator\Constraints\Choice;
 
 class BlogType extends AbstractType
 {
@@ -44,7 +46,7 @@ class BlogType extends AbstractType
       ->add('text', TextareaType::class, [
         'required' => true,
       ])
-      ->add('status')
+      //->add('status')
       ->add('blog_collection', EntityType::class, [
         'class' => BlogCollection::class,
         'choice_label' => 'name',
@@ -59,7 +61,15 @@ class BlogType extends AbstractType
         'required' => false,
         /* 'empty_data' => null */
         //'choices' => $group->getUsers(),
-      ]);
+      ])
+
+    ->add('status', ChoiceType::class, [
+      'choices' => [
+        'pending' => 'pending',
+        'active' => 'active',
+        'blocked' => 'blocked',
+      ]
+    ]);
 
     // Разрешаем использовать категорию только админу
     if ($this->security->isGranted('ROLE_ADMIN')) {

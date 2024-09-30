@@ -8,12 +8,15 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\PersistentCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\BooleanConfigurator;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: BlogRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Blog
 {
+  use TimestampableEntity;
   #[ORM\Id]
   #[ORM\GeneratedValue]
   #[ORM\Column]
@@ -31,7 +34,7 @@ class Blog
   private ?string $text = null;
 
   #[ORM\Column]
-  private ?bool $status = null;
+  private ?string $status = null;
 
   #[ORM\ManyToOne(targetEntity: Category::class)]
   #[ORM\JoinColumn(name: 'category_id', referencedColumnName: 'id')]
@@ -71,6 +74,21 @@ class Blog
   #[ORM\ManyToMany(targetEntity: "Tag", cascade: ['persist']),]
 
   private ArrayCollection|PersistentCollection $tags;
+
+  #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+  private ?\DateTime $blockedAt = null;
+
+  public function getBlockedAt(): ?\DateTime
+  {
+    return $this->blockedAt;
+  }
+
+  public function setBlockedAt(?\DateTime $blockedAt): static
+  {
+    $this->blockedAt = $blockedAt;
+
+    return $this;
+  }
 
   public function setText(?string $text): static
   {
@@ -113,12 +131,12 @@ class Blog
     return $this;
   }
 
-  public function getStatus(): ?bool
+  public function getStatus(): ?string
   {
     return $this->status;
   }
 
-  public function setStatus(bool $status): static
+  public function setStatus(string $status): static
   {
     $this->status = $status;
 
@@ -175,5 +193,19 @@ class Blog
     //$tag->addArticle($this); // synchronously updating inverse side
     $this->tags[] = $tag;
   }
+
+#[ORM\PreUpdate]
+public function setBlockedAtValue():void
+{
+  //dd($this);
+  if ($this->status === 'blocked' && !$this->blockedAt) {}
+  $this->blockedAt = new \DateTime();
+}
+
+//  #[ORM\PrePersist]
+//  public function doOtherStuffOnPrePersist()
+//  {
+//    $this->title = 'changed from prePersist callback!';
+//  }
 
 }
