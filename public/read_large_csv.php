@@ -60,9 +60,9 @@ if ($import) {
 
         //$rows[] = $data;
 
-        if ($row > 1000) {
-            break;
-        }
+//        if ($row > 1000) {
+//            break;
+//        }
 
        /*  echo '<pre>';
         print_r($data);

@@ -44,7 +44,10 @@ class DefaultControllerTest extends WebTestCaseUnit
     // Здесь проверим число сгенеренных блогов с теми, что на странице в контейнерах div.col-md-4.blog-item
     //$this->assertCount(6, $crawler->filter('div.col-md-4.blog-item')->count());
 
-    // Идея в том, что 
+    // Идея в том, что сравнение похоже возможно, если сперва сгенерить
+    // BlogFactory::createMany и/или BlogFactory::createOne
+    // и далее сравнивать с методом, который выводит эти блоги на главной
+    // т.е. с src/Repository/BlogRepository :: getBlogs
     $this->assertCount(6, $crawler->filter('div.col-md-4.blog-item'));
   }
 }
