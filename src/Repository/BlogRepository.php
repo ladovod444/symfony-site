@@ -22,14 +22,14 @@ class BlogRepository extends ServiceEntityRepository
   /**
    * @return Blog[] Returns an array of Blog objects
    */
-  public function findByBlogFilter(BlogFilter $blogFilter) :QueryBuilder
+  public function findByBlogFilter(BlogFilter $blogFilter): QueryBuilder
   {
     $blogs = $this->createQueryBuilder('b');
 
     // Элемент оптимизации запроса
     $blogs->leftJoin(User::class, 'u', 'WITH', 'u.id = b.user');
-                                                                                     // здесь именно
-                                                                                 // связанная сущность user
+    // здесь именно
+    // связанная сущность user
 
     if ($blogFilter->getTitle() || $blogFilter->getDescription()) {
 
@@ -63,9 +63,13 @@ class BlogRepository extends ServiceEntityRepository
     return $blogs;
   }
 
-  public function getBlogs()
+  /**
+   * @return array<Blog>
+   */
+  public function getBlogs(): array
   {
-    return $this->createQueryBuilder('b')
+    return $this
+      ->createQueryBuilder('b')
       ->setMaxResults(6)
       ->getQuery()
       ->getResult();

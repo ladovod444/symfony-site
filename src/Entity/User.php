@@ -40,6 +40,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
   #[ORM\Column]
   private bool $isVerified = false;
 
+  public function setIsVerified(bool $isVerified): void
+  {
+    $this->isVerified = $isVerified;
+  }
+
   public function getId(): ?int
   {
     return $this->id;
