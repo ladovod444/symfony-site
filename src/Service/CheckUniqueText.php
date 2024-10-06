@@ -37,7 +37,7 @@ class CheckUniqueText
 
     // TODO нужно обработать ошибки
 
-    return (int) $result['percent'];
+    return isset($result['percent']) ? (int) $result['percent'] : 0;
   }
 
 
