@@ -11,14 +11,20 @@ use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 // Здесь можно задать "главный" урл
-#[Route('/user/blog')]
+#[Route('/blog')]
 final class BlogController extends AbstractController
 {
+
+    public function __construct(private RequestStack $requestStack,) {
+
+    }
+
   #[Route(name: 'app_user_blog_index', methods: ['GET'])]
   public function index(Request $request, BlogRepository $blogRepository, PaginatorInterface $paginator,): Response
   {
@@ -43,47 +49,47 @@ final class BlogController extends AbstractController
     ]);
   }
 
-  #[Route('/new', name: 'app_user_blog_new', methods: ['GET', 'POST'])]
-  public function new(Request $request, EntityManagerInterface $entityManager): Response
-  {
-    $blog = new Blog($this->getUser());
-    $form = $this->createForm(BlogType::class, $blog);
-    $form->handleRequest($request);
+//  #[Route('/new', name: 'app_user_blog_new', methods: ['GET', 'POST'])]
+//  public function new(Request $request, EntityManagerInterface $entityManager): Response
+//  {
+//    $blog = new Blog($this->getUser());
+//    $form = $this->createForm(BlogType::class, $blog);
+//    $form->handleRequest($request);
+//
+//    if ($form->isSubmitted() && $form->isValid()) {
+//      $entityManager->persist($blog);
+//      $entityManager->flush();
+//
+//      return $this->redirectToRoute('app_user_blog_index', [], Response::HTTP_SEE_OTHER);
+//    }
+//
+//    return $this->render('blog/new.html.twig', [
+//      'blog' => $blog,
+//      'form' => $form,
+//    ]);
+//  }
 
-    if ($form->isSubmitted() && $form->isValid()) {
-      $entityManager->persist($blog);
-      $entityManager->flush();
-
-      return $this->redirectToRoute('app_user_blog_index', [], Response::HTTP_SEE_OTHER);
-    }
-
-    return $this->render('blog/new.html.twig', [
-      'blog' => $blog,
-      'form' => $form,
-    ]);
-  }
-
-  #[IsGranted('edit', 'blog')]
-  #[Route('/{id}/edit', name: 'app_user_blog_edit', methods: ['GET', 'POST'])]
-  public function edit(Request $request, Blog $blog, EntityManagerInterface $entityManager): Response
-  {
-    $form = $this->createForm(BlogType::class, $blog);
-    $form->handleRequest($request);
-
-    if ($form->isSubmitted() && $form->isValid()) {
-      $entityManager->flush();
-
-      return $this->redirectToRoute('app_user_blog_index', [], Response::HTTP_SEE_OTHER);
-    }
-
-    return $this->render('blog/edit.html.twig', [
-      'blog' => $blog,
-      'form' => $form,
-    ]);
-  }
+//  #[IsGranted('edit', 'blog')]
+//  #[Route('/{id}/edit', name: 'app_user_blog_edit', methods: ['GET', 'POST'])]
+//  public function edit(Request $request, Blog $blog, EntityManagerInterface $entityManager): Response
+//  {
+//    $form = $this->createForm(BlogType::class, $blog);
+//    $form->handleRequest($request);
+//
+//    if ($form->isSubmitted() && $form->isValid()) {
+//      $entityManager->flush();
+//
+//      return $this->redirectToRoute('app_user_blog_index', [], Response::HTTP_SEE_OTHER);
+//    }
+//
+//    return $this->render('blog/edit.html.twig', [
+//      'blog' => $blog,
+//      'form' => $form,
+//    ]);
+//  }
 
 //  #[IsGranted('view', 'blog', 'Blog post is not found!!')]
-  #[Route('/{id}', name: 'app_user_blog_show', methods: ['GET'])]
+  #[Route('/{id}', name: 'blog_view', methods: ['GET'])]
   public function show(Blog $blog): Response
   {
     $blog_tags = [];
@@ -96,14 +102,44 @@ final class BlogController extends AbstractController
     ]);
   }
 
-  #[Route('/{id}', name: 'app_user_blog_delete', methods: ['POST'])]
-  public function delete(Request $request, Blog $blog, EntityManagerInterface $entityManager): Response
-  {
-    if ($this->isCsrfTokenValid('delete' . $blog->getId(), $request->getPayload()->getString('_token'))) {
-      $entityManager->remove($blog);
-      $entityManager->flush();
+    public function testAction(Request $request, ): Response
+    {
+        $content = $request->getContent();
+        //dd($content);
+
+        //dd($request->query->get('test'));
+        //dd($request->cookies);
+//        dd($request->attributes);
+//        dd($request->headers->get('User-Agent'));
+
+        //echo $request->query->get('test', 'default');
+
+        //$session = $this->requestStack->getSession();
+        $session = $request->getSession();
+        //var_dump($session);
+
+        //https://symfony.com/doc/current/session.html
+
+        return $this->render('blog/test.html.twig');
     }
 
-    return $this->redirectToRoute('app_user_blog_index', [], Response::HTTP_SEE_OTHER);
-  }
+    //public function __invoke(Request $request, string|int $slug): Response
+    public function __invoke(Blog $blog): Response
+    {
+        dd($blog);
+        //echo $slug;
+        return $this->render('blog/test.html.twig');
+        // TODO: Implement __invoke() method.
+    }
+
+//  #[Route('/{id}', name: 'app_user_blog_delete', methods: ['POST'])]
+//  public function delete(Request $request, Blog $blog, EntityManagerInterface $entityManager): Response
+//  {
+//    if ($this->isCsrfTokenValid('delete' . $blog->getId(), $request->getPayload()->getString('_token'))) {
+//      $entityManager->remove($blog);
+//      $entityManager->flush();
+//    }
+//
+//    return $this->redirectToRoute('app_user_blog_index', [], Response::HTTP_SEE_OTHER);
+//  }
 }

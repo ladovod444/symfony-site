@@ -111,7 +111,8 @@ class Page
 
   public function getTags(): ArrayCollection|PersistentCollection
   {
-    return $this->tags;
+   return $this->tags ?? new ArrayCollection();
+    //return $this->tags;
   }
 
   public function setTags(ArrayCollection|PersistentCollection $value)

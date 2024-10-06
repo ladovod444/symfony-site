@@ -32,7 +32,7 @@ class PageFixtures extends Fixture
       $page->setAuthor('Author' . $i);
       $page->setStatus(true);
 
-      $manager->persist($page);
+      //$manager->persist($page);
     }
     $manager->flush();
   }

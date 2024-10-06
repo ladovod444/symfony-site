@@ -2,6 +2,9 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
 use App\Repository\BlogRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Types\Types;
@@ -10,10 +13,22 @@ use Doctrine\ORM\PersistentCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\BooleanConfigurator;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: BlogRepository::class)]
 #[ORM\HasLifecycleCallbacks]
+#[ApiResource(
+    operations: [
+        new Get(normalizationContext: ['groups' => 'blog:item']),
+        new GetCollection(normalizationContext: ['groups' => 'blog:list'])
+    ],
+    order: ['id' => 'DESC',],
+    paginationEnabled: true,
+)]
+
+// https://symfony-blog.ddev.site/api/blogs?page=6
+
 class Blog
 {
   use TimestampableEntity;
@@ -24,10 +39,12 @@ class Blog
 
   #[Assert\NotBlank(message: 'Заголовок обязателен для заполнения')]
   #[ORM\Column(length: 255)]
+  #[Groups(['blog:list', 'blog:item'])]
   private ?string $title = null;
 
   #[Assert\NotBlank(message: 'Описание обязательно для заполнения')]
   #[ORM\Column(type: Types::TEXT)]
+  #[Groups(['blog:list', 'blog:item'])]
   private ?string $description = null;
 
   #[ORM\Column(type: Types::TEXT)]
@@ -42,6 +59,7 @@ class Blog
 
   #[ORM\ManyToOne(targetEntity: User::class)]
   #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')]
+  #[Groups(['blog:list', 'blog:item'])]
   private User|null $user = null;
 
 //  #[Assert\NotBlank]
@@ -75,7 +93,7 @@ class Blog
 
   private ArrayCollection|PersistentCollection $tags;
 
-  #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+  #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
   private ?\DateTime $blockedAt = null;
 
   public function getBlockedAt(): ?\DateTime

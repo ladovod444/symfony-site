@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route('/user/page')]
+#[Route('/page')]
 final class PageController extends AbstractController
 {
   #[Route(name: 'app_user_page_index', methods: ['GET'])]
