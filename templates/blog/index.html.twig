@@ -5,6 +5,12 @@
 {% block body %}
     <h1>Blog list</h1>
 
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
+
     <h2>Enter search data</h2>
     {{ form_start(formSearch) }}
     {{ form_widget(formSearch) }}
