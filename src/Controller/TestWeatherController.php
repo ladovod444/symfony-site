@@ -23,9 +23,13 @@ class TestWeatherController extends AbstractController
 //    $this->weatherService->getWeather($city);
 //    $a = 1;
 
-    return $this->render('best/index.html.twig', [
-//      'controller_name' => 'BestController',
-   ]);
+    $weather = $this->weatherService->getWeather();
+
+    return new Response(json_encode($weather));
+
+//    return $this->render('best/index.html.twig', [
+////      'controller_name' => 'BestController',
+//   ]);
 
 
 //    return $this->render('best/index.html.twig', [

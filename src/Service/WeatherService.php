@@ -2,19 +2,23 @@
 
 namespace App\Service;
 
+use App\Entity\Weather;
+use App\Repository\WeatherRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class WeatherService
 {
 
   public function __construct(
-    private HttpClientInterface $httpClient,
+    private WeatherHttpClient $weatherHttpClient,
     private string $api_url,
+    private EntityManagerInterface $entityManager,
+    private WeatherRepository $weatherRepository,
   ){
 
   }
@@ -28,30 +32,29 @@ class WeatherService
    */
   public function getWeather(): array
   {
+    $content = $this->weatherHttpClient->get($this->api_url);
+    return $content ? json_decode($content, true) : [];
+  }
 
-//    $user_ip = getenv('REMOTE_ADDR');
-//    $geo = unserialize(file_get_contents("http://www.geoplugin.net/php.gp?ip=$user_ip"));
-//    $g = 1;
+  /**
+   * @throws TransportExceptionInterface
+   * @throws ServerExceptionInterface
+   * @throws RedirectionExceptionInterface
+   * @throws DecodingExceptionInterface
+   * @throws ClientExceptionInterface
+   */
+  public function setWeather(): void
+  {
+    $weather_data = $this->getWeather();
+    $weather = $this->weatherRepository->findAll();
+    //dd($weather);
 
-    //$url = "https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&current=temperature_2m,wind_speed_10m&hourly=temperature_2m,relative_humidity_2m,wind_speed_10m"
-    $response = $this->httpClient->request(
-      'GET',
-      $this->api_url,
-      [
-        'query' => [
-          'latitude'=> 57.1615,
-          'longitude'=> 65.5346,
-          'current'=>'temperature_2m',
+    $weather = count($weather) ? $weather[0] : new Weather();
+    $weather->setTemperature($weather_data['current']['temperature_2m']);
+    $weather->setElevation($weather_data['elevation']);
 
-        ],
-      ],
-    );
+    $this->entityManager->persist($weather);
+    $this->entityManager->flush();
 
-    $statusCode = $response->getStatusCode();
-    if ($statusCode === 200) {
-      $content = $response->toArray();
-    }
-
-    return $content ?? [];
   }
 }
