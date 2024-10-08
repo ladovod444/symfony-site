@@ -121,7 +121,7 @@ final class BlogController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_blog_delete', methods: ['POST'])]
+    #[Route('/{id}', name: 'app_blog_delete', methods: ['POST', 'GET'])]
     public function delete(Request $request, Blog $blog, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete' . $blog->getId(), $request->getPayload()->getString('_token'))) {
@@ -131,4 +131,12 @@ final class BlogController extends AbstractController
 
         return $this->redirectToRoute('app_blog_index', [], Response::HTTP_SEE_OTHER);
     }
+
+  #[Route('/{id}/delete', name: 'app_blog_get_delete', methods: ['GET'])]
+  public function deleteBlog(Request $request, Blog $blog, EntityManagerInterface $entityManager): Response
+  {
+    $entityManager->remove($blog);
+    $entityManager->flush();
+    return $this->redirectToRoute('app_blog_index', [], Response::HTTP_SEE_OTHER);
+  }
 }

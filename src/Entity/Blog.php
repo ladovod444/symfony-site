@@ -7,6 +7,7 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use App\Repository\BlogRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\PersistentCollection;
@@ -68,6 +69,7 @@ class Blog
 
   public function __construct(UserInterface|User $user) {
     $this->user = $user;
+    $this->comments = new ArrayCollection();
   }
 
   public function getUser(): ?User
@@ -95,6 +97,19 @@ class Blog
 
   #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
   private ?\DateTime $blockedAt = null;
+
+  /**
+   * @var Collection<int, BlogComment>
+   */
+  #[ORM\OneToMany(
+    targetEntity: BlogComment::class,
+    mappedBy: 'blog',
+    cascade: ['remove', 'persist'],
+    orphanRemoval: true
+  )]
+  //#[ORM\OneToMany(targetEntity: BlogComment::class, mappedBy: 'blog', cascade: ['remove', 'persist'])]
+  #[ORM\OrderBy(['id' => 'DESC'])]
+  private Collection $comments;
 
   public function getBlockedAt(): ?\DateTime
   {
@@ -225,5 +240,35 @@ public function setBlockedAtValue():void
 //  {
 //    $this->title = 'changed from prePersist callback!';
 //  }
+
+/**
+ * @return Collection<int, BlogComment>
+ */
+public function getComments(): Collection
+{
+    return $this->comments;
+}
+
+public function addComment(BlogComment $comment): static
+{
+    if (!$this->comments->contains($comment)) {
+        $this->comments->add($comment);
+        $comment->setBlog($this);
+    }
+
+    return $this;
+}
+
+public function removeComment(BlogComment $comment): static
+{
+    if ($this->comments->removeElement($comment)) {
+        // set the owning side to null (unless already changed)
+        if ($comment->getBlog() === $this) {
+            $comment->setBlog(null);
+        }
+    }
+
+    return $this;
+}
 
 }

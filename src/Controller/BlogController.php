@@ -3,10 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\Blog;
+use App\Entity\BlogComment;
 use App\Filter\BlogFilter;
+use App\Form\BlogCommentType;
 use App\Form\BlogFilterType;
 use App\Form\BlogType;
 use App\Repository\BlogRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,125 +24,85 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 final class BlogController extends AbstractController
 {
 
-    public function __construct(private RequestStack $requestStack,) {
-
-    }
-
-  #[Route(name: 'app_user_blog_index', methods: ['GET'])]
-  public function index(Request $request, BlogRepository $blogRepository, PaginatorInterface $paginator,): Response
-  {
-
-    //dd($blogRepository->findAll());
-    $blogFilter = new BlogFilter($this->getUser());
-    $form = $this->createForm(BlogFilterType::class, $blogFilter);
-    $form->handleRequest($request);
-    //dd($blogFilter);
-
-    $pagination = $paginator->paginate(
-    //$query, /* query NOT result */
-      $blogRepository->findByBlogFilter($blogFilter),
-      $request->query->getInt('page', 1), /*page number*/
-      5 /*limit per page*/
-    );
-
-    return $this->render('blog/index.html.twig', [
-      //'blogs' => $blogRepository->findByBlogFilter($blogFilter),
-      'pagination' => $pagination,
-      'formSearch' => $form->createView(),
-    ]);
-  }
-
-//  #[Route('/new', name: 'app_user_blog_new', methods: ['GET', 'POST'])]
-//  public function new(Request $request, EntityManagerInterface $entityManager): Response
-//  {
-//    $blog = new Blog($this->getUser());
-//    $form = $this->createForm(BlogType::class, $blog);
-//    $form->handleRequest($request);
-//
-//    if ($form->isSubmitted() && $form->isValid()) {
-//      $entityManager->persist($blog);
-//      $entityManager->flush();
-//
-//      return $this->redirectToRoute('app_user_blog_index', [], Response::HTTP_SEE_OTHER);
-//    }
-//
-//    return $this->render('blog/new.html.twig', [
-//      'blog' => $blog,
-//      'form' => $form,
-//    ]);
-//  }
-
-//  #[IsGranted('edit', 'blog')]
-//  #[Route('/{id}/edit', name: 'app_user_blog_edit', methods: ['GET', 'POST'])]
-//  public function edit(Request $request, Blog $blog, EntityManagerInterface $entityManager): Response
-//  {
-//    $form = $this->createForm(BlogType::class, $blog);
-//    $form->handleRequest($request);
-//
-//    if ($form->isSubmitted() && $form->isValid()) {
-//      $entityManager->flush();
-//
-//      return $this->redirectToRoute('app_user_blog_index', [], Response::HTTP_SEE_OTHER);
-//    }
-//
-//    return $this->render('blog/edit.html.twig', [
-//      'blog' => $blog,
-//      'form' => $form,
-//    ]);
-//  }
-
-//  #[IsGranted('view', 'blog', 'Blog post is not found!!')]
-  #[Route('/{id}', name: 'blog_view', methods: ['GET'])]
-  public function show(Blog $blog): Response
+  #[Route('/{id}', name: 'blog_view', methods: ['GET', 'POST'])]
+  public function show(Blog $blog, Request $request): Response
   {
     $blog_tags = [];
     foreach ($blog->getTags() as $tag) {
       $blog_tags[] = $tag->getName();
     }
+
+    // Для формы создаем action - /add/comment/1625
+    // Для этого action создан отдельный контроллер
+    // src/Controller/BlogCommentController.php и action addComment
+    $commentForm = $this->createForm(
+      BlogCommentType::class,
+      null,
+      ['action' => $this->generateUrl('blog_add_comment', ['blog' => $blog->getId()])]
+    );
+
+    //$blogCommments = $blog->getComments();// По сути это не нужно делать
+    // Потому что при создании Entity Comment было также создано
+    // поле comments у Entity Blog src/Entity/Blog.php - private Collection $comments;
+    // а также геттер для этого поля - getComments
+    // Это позволяет получать св-во blog.comments в шаблоне twig
+
     return $this->render('blog/show.html.twig', [
       'blog' => $blog,
       'blog_tags' => $blog_tags,
+      //'blog_comments' => $blogCommments,
+      'commentForm' => $commentForm->createView(),
     ]);
   }
 
-    public function testAction(Request $request, ): Response
-    {
-        $content = $request->getContent();
-        //dd($content);
+  public function testAction(Request $request): Response
+  {
+    $content = $request->getContent();
+    //dd($content);
 
-        //dd($request->query->get('test'));
-        //dd($request->cookies);
+    //dd($request->query->get('test'));
+    //dd($request->cookies);
 //        dd($request->attributes);
 //        dd($request->headers->get('User-Agent'));
 
-        //echo $request->query->get('test', 'default');
+    //echo $request->query->get('test', 'default');
 
-        //$session = $this->requestStack->getSession();
-        $session = $request->getSession();
-        //var_dump($session);
+    //$session = $this->requestStack->getSession();
+    $session = $request->getSession();
+    //var_dump($session);
 
-        //https://symfony.com/doc/current/session.html
+    //https://symfony.com/doc/current/session.html
 
-        return $this->render('blog/test.html.twig');
-    }
+    return $this->render('blog/test.html.twig');
+  }
 
-    //public function __invoke(Request $request, string|int $slug): Response
-    public function __invoke(Blog $blog): Response
-    {
-        dd($blog);
-        //echo $slug;
-        return $this->render('blog/test.html.twig');
-        // TODO: Implement __invoke() method.
-    }
+  //public function __invoke(Request $request, string|int $slug): Response
+  public function __invoke(Blog $blog): Response
+  {
+    dd($blog);
+    //echo $slug;
+    return $this->render('blog/test.html.twig');
+    // TODO: Implement __invoke() method.
+  }
 
-//  #[Route('/{id}', name: 'app_user_blog_delete', methods: ['POST'])]
-//  public function delete(Request $request, Blog $blog, EntityManagerInterface $entityManager): Response
-//  {
-//    if ($this->isCsrfTokenValid('delete' . $blog->getId(), $request->getPayload()->getString('_token'))) {
-//      $entityManager->remove($blog);
-//      $entityManager->flush();
-//    }
-//
-//    return $this->redirectToRoute('app_user_blog_index', [], Response::HTTP_SEE_OTHER);
-//  }
+  #[Route('/test/exp', name: 'blog_exp', methods: ['GET', 'POST'])]
+  public function exp(EntityManagerInterface $entityManager, UserRepository $userRepository): Response
+  {
+    $user = $this->getUser() ? $this->getUser() : $userRepository->findOneBy(['email' => 'ladovod@gmail.com']);
+    $blog = new Blog($user);
+
+    $blog->setTitle('title')
+      ->setDescription('description')
+      ->setText('text')
+    ->setStatus('pending');
+
+    $blog->addComment((new BlogComment())->setText('blog comment text'));
+
+    $entityManager->persist($blog);
+    $entityManager->flush();
+
+    return new Response('exp');
+  }
+
+
 }
