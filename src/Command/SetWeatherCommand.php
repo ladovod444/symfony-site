@@ -13,7 +13,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-  name: 'set-weather',
+  name: 'weather:set-weather',
   description: 'Add a short description for your command',
 )]
 class SetWeatherCommand extends Command
