@@ -61,4 +61,22 @@
     {% if is_granted("ROLE_ADMIN") %}
         {{ include('blog/_delete_form.html.twig') }}
     {% endif %}
+
+    <h3 class="commentForm">Comments</h3>
+    {% if blog.comments %}
+        {% for blog_comment in blog.comments %}
+            <p> <span class="comment_id">{{ blog_comment.id }}</span> {{ blog_comment.text }}</p>
+        {% endfor %}
+    {% endif %}
+
+    {% if commentForm is defined  %}
+        <h4 class="commentForm">Add comment</h4>
+        {{ form_start(commentForm) }}
+        {{ form_widget(commentForm) }}
+        <button class="btn btn-primary">{{ button_label|default('Save') }}</button>
+        {{ form_end(commentForm) }}
+        <br />
+
+    {% endif %}
+
 {% endblock %}

@@ -61,10 +61,12 @@
                         {# For admin user #}
                         <a href="{{ path('app_blog_show', {'id': blog.id}) }}">show</a>
                         <a href="{{ path('app_blog_edit', {'id': blog.id}) }}">edit</a>
+                        <a href="{{ path('app_blog_get_delete', {'id': blog.id}) }}">delete</a>
                     {% else %}
                         {# For user #}
                         <a href="{{ path('app_user_blog_show', {'id': blog.id}) }}">show</a>
                         <a href="{{ path('app_user_blog_edit', {'id': blog.id}) }}">edit</a>
+                        <a href="{{ path('app_user_blog_get_delete', {'id': blog.id}) }}">edit</a>
                     {% endif %}
 
                 </td>
