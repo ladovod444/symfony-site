@@ -108,7 +108,7 @@ class BlogType extends AbstractType
   {
     $resolver->setDefaults([
       'data_class' => Blog::class,
-      //'csrf_protection' => false,
+      'csrf_protection' => false,
     ]);
   }
 }
