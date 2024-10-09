@@ -31,6 +31,9 @@ security:
                 path: app_logout
                 # where to redirect after logout
                 target: app_login
+            json_login:
+                # api_login is a route we will create below
+                check_path: api_login
 
             switch_user: { role: ROLE_ADMIN, parameter: _switch_user }
 
