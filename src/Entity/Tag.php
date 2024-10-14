@@ -15,10 +15,10 @@ class Tag
   #[ORM\Id]
   #[ORM\GeneratedValue]
   #[ORM\Column]
-  #[Groups(['only_api_blog'])]
+  #[Groups(['only_api_blog', 'only_api_page'])]
   private ?int $id = null;
 
-  #[Groups(['only_api_blog'])]
+  #[Groups(['only_api_blog', 'only_api_page'])]
   #[ORM\Column(length: 255)]
   private ?string $name = null;
 

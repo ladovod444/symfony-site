@@ -22,6 +22,11 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Nelmio\ApiDocBundle\Annotation\Security;
+use OpenApi\Attributes as OA;
+
+#[OA\Tag(name: "Blog posts")]
 class BlogController extends AbstractController
 {
 
@@ -33,6 +38,14 @@ class BlogController extends AbstractController
   }
 
   #[Route('/api/blog', name: 'api-blog', methods: ['GET'], format: 'json')]
+  #[OA\Response(
+    response: 200,
+    description: 'Returns Blog posts, yes!',
+    content: new OA\JsonContent(
+      type: 'array',
+      items: new OA\Items(ref: new Model(type: Blog::class, groups: ['full']))
+    )
+  )]
   public function index(): Response
   {
     $blogs = $this->blogRepository->getBlogs();

@@ -23,18 +23,19 @@ class Page
   private ?int $id = null;
 
   #[ORM\Column(length: 255)]
-  #[Groups(["only_api_page"])]
+  #[Groups(["only_api_page", "only_doc_page"])]
   private ?string $title = null;
 
   #[ORM\Column(type: Types::TEXT, nullable: true)]
-  #[Groups(["only_api_page"])]
+  #[Groups(["only_api_page", "only_doc_page"])]
   private ?string $body = null;
 
   #[ORM\Column]
+  #[Groups(["only_doc_page"])]
   private ?bool $status = null;
 
   #[ORM\Column(length: 255)]
-  #[Groups(["only_api_page"])]
+  #[Groups(["only_api_page", "only_doc_page"])]
   private ?string $author = null;
 
   #[ORM\ManyToOne(targetEntity: User::class)]
@@ -61,6 +62,7 @@ class Page
   #[ORM\JoinColumn(name: 'page_id', referencedColumnName: 'id')]
   #[ORM\InverseJoinColumn(name: 'tag_id', referencedColumnName: 'id', unique: true)]
   #[ORM\ManyToMany(targetEntity: "Tag", cascade: ['persist']), ]
+  #[Groups(["only_api_page", "only_doc_page"])]
   private ArrayCollection|PersistentCollection $tags;
 
   public function getId(): ?int
@@ -125,6 +127,17 @@ class Page
   public function setTags(ArrayCollection|PersistentCollection $value)
   {
     $this->tags = $value;
+  }
+
+  /**
+   * @return int
+   *
+   * "Вычисляемое значение"
+   */
+  #[Groups(["only_api_page"])]
+  public function getUserInfo(): string
+  {
+    return $this->getUser()->getId() . ': ' .$this->getUser()->getEmail();
   }
 
   public static function createFromDto(UserInterface|User $user, PageDto $pageDto): static

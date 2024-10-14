@@ -14,6 +14,8 @@ use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: TestApiEntityRepository::class)]
 #[ApiResource(
+    shortName: "The best Test API Entity",
+    description: 'Test API Entity, ye!!!',
     operations: [
         new Get(normalizationContext: ['groups' => 'test_entity:item']),
         new GetCollection(normalizationContext: ['groups' => 'test_entity:list'])
