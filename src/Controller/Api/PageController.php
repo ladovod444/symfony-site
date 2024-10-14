@@ -79,7 +79,7 @@ class PageController extends AbstractController
       $this->entityManager->persist($page);
       $this->entityManager->flush();
 
-      return $this->json($page);
+      return $this->json($page, Response::HTTP_OK);
     } else {
       return $this->json((string)$form->getErrors(true, false), Response::HTTP_BAD_REQUEST);
     }
@@ -91,7 +91,7 @@ class PageController extends AbstractController
     $this->entityManager->remove($page);
     $this->entityManager->flush();
 
-    return $this->json([]);
+    return $this->json([], Response::HTTP_NO_CONTENT);
   }
 
   #[Route('/api/page/filter', name: 'api-page-filter', methods: ['get'], format: 'json')]

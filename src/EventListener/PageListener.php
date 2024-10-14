@@ -43,7 +43,10 @@ class PageListener
 
     //dd($this->entites);
     foreach ($this->entites as $entity) {
-      $this->bus->dispatch(SetStatusMessage::create($entity->getId()));
+      if ($entity instanceof Page && $entity->getId() !== null) {
+        $this->bus->dispatch(SetStatusMessage::create($entity->getId()));
+      }
+
       //$entity->setStatus(true);
     }
     //dd($args);
