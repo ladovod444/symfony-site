@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Dto\PageDto;
 use App\Repository\PageRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Types\Types;
@@ -9,33 +10,39 @@ use Doctrine\ORM\PersistentCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: PageRepository::class)]
 class Page
 {
   use TimestampableEntity;
+
   #[ORM\Id]
   #[ORM\GeneratedValue]
   #[ORM\Column]
   private ?int $id = null;
 
   #[ORM\Column(length: 255)]
+  #[Groups(["only_api_page"])]
   private ?string $title = null;
 
   #[ORM\Column(type: Types::TEXT, nullable: true)]
+  #[Groups(["only_api_page"])]
   private ?string $body = null;
 
   #[ORM\Column]
   private ?bool $status = null;
 
   #[ORM\Column(length: 255)]
+  #[Groups(["only_api_page"])]
   private ?string $author = null;
 
   #[ORM\ManyToOne(targetEntity: User::class)]
   #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')]
   private User|null $user = null;
 
-  public function __construct(UserInterface|User|null $user) {
+  public function __construct(UserInterface|User|null $user)
+  {
     $this->user = $user;
   }
 
@@ -111,7 +118,7 @@ class Page
 
   public function getTags(): ArrayCollection|PersistentCollection
   {
-   return $this->tags ?? new ArrayCollection();
+    return $this->tags ?? new ArrayCollection();
     //return $this->tags;
   }
 
@@ -119,4 +126,26 @@ class Page
   {
     $this->tags = $value;
   }
+
+  public static function createFromDto(UserInterface|User $user, PageDto $pageDto): static
+  {
+    $page = new self($user);
+    $page->setTitle($pageDto->title);
+    $page->setBody($pageDto->body);
+    $page->setStatus($pageDto->status);
+    $page->setAuthor($pageDto->author);
+
+    return $page;
+  }
+
+  public static function updateFromDto(PageDto $pageDto, Page $page): static
+  {
+    $page->setTitle($pageDto->title)
+      ->setBody($pageDto->body)
+      ->setStatus($pageDto->status)
+      ->setAuthor($pageDto->author);
+    //->setTags($pageDto->tags);
+    return $page;
+  }
+
 }

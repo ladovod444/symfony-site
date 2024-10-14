@@ -14,7 +14,6 @@ class UpdatedAtCallback
       return $innerObject;
     }
 
-    // В случае зацикливания будет возвращаться Id, а не объект
     return $innerObject->format('Y-m-d H:i:s');
     //return 'test UpdatedAt';
   }

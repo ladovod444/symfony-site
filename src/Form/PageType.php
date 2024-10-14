@@ -11,29 +11,30 @@ use App\Form\DataTransformer\TagTransformer;
 
 class PageType extends AbstractType
 {
-    public function __construct(private TagTransformer $tagTransformer)
-    {
-    }
-    public function buildForm(FormBuilderInterface $builder, array $options): void
-    {
-        $builder
-            ->add('title')
-            ->add('body')
-            ->add('status')
-            ->add('author')
-            ->add('tags', TextType::class, [          
-                'label' => 'Теги',
-                'required' => false,
-            ])
-        ;
-        $builder->get('tags')
-            ->addModelTransformer($this->tagTransformer);
-    }
+  public function __construct(private TagTransformer $tagTransformer)
+  {
+  }
 
-    public function configureOptions(OptionsResolver $resolver): void
-    {
-        $resolver->setDefaults([
-            'data_class' => Page::class,
-        ]);
-    }
+  public function buildForm(FormBuilderInterface $builder, array $options): void
+  {
+    $builder
+      ->add('title')
+      ->add('body')
+      ->add('status')
+      ->add('author')
+      ->add('tags', TextType::class, [
+        'label' => 'Теги',
+        'required' => false,
+      ]);
+    $builder->get('tags')
+      ->addModelTransformer($this->tagTransformer);
+  }
+
+  public function configureOptions(OptionsResolver $resolver): void
+  {
+    $resolver->setDefaults([
+      'data_class' => Page::class,
+      'csrf_protection' => false,
+    ]);
+  }
 }
