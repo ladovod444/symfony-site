@@ -7,3 +7,15 @@ controllers:
 test_blog:
     path: /blog
     controller: App\Controller\BlogController::test
+
+# config/routes.yaml
+# config/routes.yaml
+app.swagger_ui:
+    path: /api/doc
+    methods: GET
+    defaults: { _controller: nelmio_api_doc.controller.swagger_ui }
+
+app.redocly:
+    path: /api/doc
+    methods: GET
+    defaults: { _controller: nelmio_api_doc.controller.redocly }
