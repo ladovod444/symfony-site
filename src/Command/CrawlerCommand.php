@@ -3,6 +3,7 @@
 namespace App\Command;
 
 use App\Service\NewsGrabber;
+use Monolog\Attribute\WithMonologChannel;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Command\LockableTrait;
@@ -12,6 +13,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Contracts\Service\Attribute\Required;
 
 #[AsCommand(
   name: 'blog:news:import',
@@ -55,11 +57,22 @@ class CrawlerCommand extends Command
 //        echo $count;
 //        return Command::SUCCESS;
 
-    $logger = new ConsoleLogger($output);
+
     $output->writeln('<info>Importing news ...</info>');
     $output->writeln('<error>Some error while importing news ...</error>');
     $output->writeln('<comment>Comment ...</comment>');
-    $this->newsGrabber->setLogger($logger)->importNews($count, $dryRun);
+
+    // Если команда запущена в дебаг моде, то выводим логи в консоль
+    if ($output->isVerbose()) { // таким образом определяем был ли указан verbose -v
+      //dd($count);
+      $logger = new ConsoleLogger($output);
+      $this->newsGrabber->setLogger($logger);
+    }
+
+    // Иначе создается файл
+    // #[Required] предполагает ,что метод им помеченный запуститься
+    // И при указанном #[WithMonologChannel('parser')] будет использоваться именно parser
+    $this->newsGrabber->importNews($count, $dryRun);
     //echo "test10000000\n";
 
     $this->release();

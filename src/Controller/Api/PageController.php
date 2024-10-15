@@ -9,6 +9,7 @@ use App\Form\PageType;
 use App\Repository\PageRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -48,9 +49,12 @@ class PageController extends AbstractController
 //    description: 'The field used to order rewards',
 //    schema: new OA\Schema(type: 'string')
 //  )]
-  public function index(): Response
+  public function index(LoggerInterface $logger): Response
   {
     $pages = $this->pageRepository->findAll();
+
+    $logger->info('Getting blog pages!!!');
+    //$logger->error('Test for error mess');
 
     return $this->json(
       $pages,
