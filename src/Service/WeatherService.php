@@ -5,12 +5,15 @@ namespace App\Service;
 use App\Entity\Weather;
 use App\Repository\WeatherRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
+use Monolog\Attribute\WithMonologChannel;
 
+#[WithMonologChannel('weather')]
 class WeatherService
 {
 
@@ -19,6 +22,7 @@ class WeatherService
     private string $api_url,
     private EntityManagerInterface $entityManager,
     private WeatherRepository $weatherRepository,
+    private LoggerInterface $logger
   ){
 
   }
@@ -32,6 +36,7 @@ class WeatherService
    */
   public function getWeather(): array
   {
+    $this->logger->notice("Getting weather");
     $content = $this->weatherHttpClient->get($this->api_url);
     return $content ? json_decode($content, true) : [];
   }
@@ -55,6 +60,7 @@ class WeatherService
 
     $this->entityManager->persist($weather);
     $this->entityManager->flush();
+    $this->logger->notice("Weather data was set");
 
   }
 }
