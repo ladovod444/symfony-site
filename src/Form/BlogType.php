@@ -69,7 +69,8 @@ class BlogType extends AbstractType
         'active' => 'active',
         'blocked' => 'blocked',
       ]
-    ]);
+    ])
+    ->add('blogMeta', BlogMetaType::class, []);
 
     // Разрешаем использовать категорию только админу
     if ($this->security->isGranted('ROLE_ADMIN')) {

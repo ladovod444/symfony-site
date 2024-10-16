@@ -1,7 +1,14 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}Blog{% endblock %}
-
+{% block meta %}
+      {% if blog.blogMeta %}
+          <meta charset="UTF-8">
+          <meta name="description" content="{{ blog.blogMeta.description }}"/>
+          <meta name="keywords" content="{{ blog.blogMeta.keywords }}"/>
+          <meta name="author" content="{{ blog.blogMeta.author }}"/>
+      {% endif %}
+ {% endblock %}
 {% block body %}
     <h1>Blog</h1>
 
@@ -65,17 +72,17 @@
     <h3 class="commentForm">Comments</h3>
     {% if blog.comments %}
         {% for blog_comment in blog.comments %}
-            <p> <span class="comment_id">{{ blog_comment.id }}</span> {{ blog_comment.text }}</p>
+            <p><span class="comment_id">{{ blog_comment.id }}</span> {{ blog_comment.text }}</p>
         {% endfor %}
     {% endif %}
 
-    {% if commentForm is defined  %}
+    {% if commentForm is defined %}
         <h4 class="commentForm">Add comment</h4>
         {{ form_start(commentForm) }}
         {{ form_widget(commentForm) }}
         <button class="btn btn-primary">{{ button_label|default('Save') }}</button>
         {{ form_end(commentForm) }}
-        <br />
+        <br/>
 
     {% endif %}
 

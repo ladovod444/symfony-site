@@ -63,7 +63,9 @@ final class BlogController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            //dd($blog);
             $entityManager->persist($blog);
+            //$entityManager->persist($blog->getBlogMeta());
             $entityManager->flush();
 
             // TODO проверка уникальности пока здесь далее будет перенесена в очередь,

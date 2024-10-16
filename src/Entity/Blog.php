@@ -74,6 +74,22 @@ class Blog
   #[ORM\Column(type: Types::SMALLINT, nullable: true)]
   private ?int $percent = null;
 
+  #[ORM\OneToOne(mappedBy: 'blog', cascade: ['persist', 'remove'])]
+  private BlogMeta|null $blogMeta = null;
+
+  public function getBlogMeta(): ?BlogMeta
+  {
+    return $this->blogMeta;
+  }
+
+  public function setBlogMeta(?BlogMeta $blogMeta): static
+  {
+    $blogMeta?->setBlog($this);
+    $this->blogMeta = $blogMeta;
+
+    return $this;
+  }
+
   public function __construct(UserInterface|User $user)
   {
     $this->user = $user;
