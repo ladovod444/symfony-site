@@ -2,42 +2,51 @@
 
 {% block title %}Page{% endblock %}
 
+{% block meta %}
+    {% if page.pageMeta %}
+        <meta charset="UTF-8">
+        <meta name="description" content="{{ page.pageMeta.description }}"/>
+        <meta name="keywords" content="{{ page.pageMeta.keywords }}"/>
+        <meta name="author" content="{{ page.pageMeta.author }}"/>
+    {% endif %}
+{% endblock %}
+
 {% block body %}
     <h1>Page</h1>
     <h3>Hello page</h3>
 
     <table class="table">
         <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ page.id }}</td>
-            </tr>
-            <tr>
-                <th>Title</th>
-                <td>{{ page.title }}</td>
-            </tr>
-            <tr>
-                <th>Body</th>
-                <td>{{ page.body }}</td>
-            </tr>
-            <tr>
-                <th>Status</th>
-                <td>{{ page.status ? 'Yes' : 'No' }}</td>
-            </tr>
-            <tr>
-                <th>Author</th>
-                <td>{{ page.author }}</td>
-            </tr>
-             <tr>
-                <th>Tags</th>
-                {# <td>{{ page.tags }}</td> #}
-                <td>{{ page_tags|join(',') }}</td>
-                
-               {#  {% for page_tag in page.tags %}
+        <tr>
+            <th>Id</th>
+            <td>{{ page.id }}</td>
+        </tr>
+        <tr>
+            <th>Title</th>
+            <td>{{ page.title }}</td>
+        </tr>
+        <tr>
+            <th>Body</th>
+            <td>{{ page.body }}</td>
+        </tr>
+        <tr>
+            <th>Status</th>
+            <td>{{ page.status ? 'Yes' : 'No' }}</td>
+        </tr>
+        <tr>
+            <th>Author</th>
+            <td>{{ page.author }}</td>
+        </tr>
+        <tr>
+            <th>Tags</th>
+            {# <td>{{ page.tags }}</td> #}
+            <td>{{ page_tags|join(',') }}</td>
+
+            {#  {% for page_tag in page.tags %}
                 {{ page_tag.name }}
                 {% endfor %} #}
 
-            </tr>
+        </tr>
         </tbody>
     </table>
 
