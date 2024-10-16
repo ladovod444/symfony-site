@@ -25,7 +25,8 @@ class PageType extends AbstractType
       ->add('tags', TextType::class, [
         'label' => 'Теги',
         'required' => false,
-      ]);
+      ])
+    ->add('pageMeta', PageMetaType::class, []);
     $builder->get('tags')
       ->addModelTransformer($this->tagTransformer);
   }

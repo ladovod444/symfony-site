@@ -42,6 +42,25 @@ class Page
   #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')]
   private User|null $user = null;
 
+  #[ORM\OneToOne(mappedBy: 'page', cascade: ['persist', 'remove'])]
+  private PageMeta|null $pageMeta = null;
+
+  public function getPageMeta(): ?PageMeta
+  {
+    return $this->pageMeta;
+  }
+
+  public function setPageMeta(?PageMeta $pageMeta): static
+  {
+    if ($pageMeta) {
+      $pageMeta->setPage($this);
+    }
+    $this->pageMeta = $pageMeta;
+
+    return $this;
+  }
+
+
   public function __construct(UserInterface|User|null $user)
   {
     $this->user = $user;
