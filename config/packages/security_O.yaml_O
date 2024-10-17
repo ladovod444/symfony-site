@@ -14,32 +14,17 @@ security:
                 property: email
         # used to reload user from session & other features (e.g. switch_user)
     firewalls:
-#        login:
-#            pattern: ^/api/login
-#            stateless: true
-#            json_login:
-#                check_path: /api/login_check # or api_login_check as defined in config/routes.yaml
-#                success_handler: lexik_jwt_authentication.handler.authentication_success
-#                failure_handler: lexik_jwt_authentication.handler.authentication_failure
-#        api:
-#            pattern: ^/api
-#            stateless: true
-#            jwt: ~
-
-        firebase:
-            custom_authenticators:
-                - App\Security\ApiKeyAuthenticator
+        login:
+            pattern: ^/api/login
+            stateless: true
             json_login:
-                # api_login is a route we will create below
-                check_path: api_login_json
-            form_login:
-                login_path: app_login
-                check_path: app_login
-                enable_csrf: true
-                #                default_target_path: app_blog_index
-                #                default_target_path: app_page_index
-                default_target_path: app_login_redirect
-
+                check_path: /api/login_check # or api_login_check as defined in config/routes.yaml
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+        api:
+            pattern: ^/api
+            stateless: true
+            jwt: ~
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
@@ -59,7 +44,7 @@ security:
                 target: app_login
             json_login:
                 # api_login is a route we will create below
-                check_path: api_login_json
+                check_path: api_login
 
             switch_user: { role: ROLE_ADMIN, parameter: _switch_user }
 
@@ -76,7 +61,7 @@ security:
         - { path: ^/admin, roles: ROLE_ADMIN }
 #        - { path: ^/user, roles: ROLE_USER }
         - { path: ^/api/user, roles: ROLE_USER }
-        - { path: ^/api/blog, roles: ROLE_USER }
+#        - { path: ^/api, roles: ROLE_USER }
         # - { path: ^/profile, roles: ROLE_USER }
 
 when@test:

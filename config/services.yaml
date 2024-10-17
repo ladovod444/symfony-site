@@ -7,6 +7,8 @@ parameters:
   photo_dir: "%kernel.project_dir%/public/uploads/photos"
   author_blog: 4
 
+  app.jwt.privateKey: '%env(file:resolve:JWT_TOKEN_SECRET_KEY)%'
+
 services:
   # default configuration for services in *this* file
   _defaults:
@@ -27,6 +29,9 @@ services:
 
   App\Service\WeatherService:
     $api_url: '%env(WEATHER_SERVICE_URL)%'
+
+  App\Security\ApiKeyAuthenticator:
+    $publicKey: '%env(file:resolve:JWT_TOKEN_PUBLIC_KEY)%'
 
   app.normalizer.object_normalizer:
     parent: Symfony\Component\Serializer\Normalizer\ObjectNormalizer
