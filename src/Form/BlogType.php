@@ -12,6 +12,7 @@ use App\Repository\UserRepository;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -97,7 +98,14 @@ class BlogType extends AbstractType
         'placeholder' => '-- Пользователь --' // Добавление "пустой" категории в список
         //'choices' => $group->getUsers(),
       ])
+          ->add('updated_at', DateTimeType::class, [
+              'widget' => 'single_text',
+          ])
       ;
+
+//        $builder->add('startDateTime', DateTimeType::class, [
+//            'date_label' => 'Starts On',
+//        ]);
     }
 
     $builder->get('tags')

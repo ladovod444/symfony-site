@@ -80,4 +80,15 @@ class BlogRepository extends ServiceEntityRepository
         return $this->findOneBy(['title' => $title]);
     }
 
+    public function findByDate(string $date): array
+    {
+        $blogs = $this->createQueryBuilder('b');
+
+        return $blogs->where('b.updatedAt < :date')
+            ->setParameter('date', $date)
+            ->getQuery()
+            ->getResult();
+
+    }
+
 }

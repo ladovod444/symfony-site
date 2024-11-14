@@ -31,7 +31,7 @@ class BlogFixtures extends Fixture implements FixtureGroupInterface
   public function load(ObjectManager $manager): void
   {
     $user  = $this->userRepository->findOneBy(['email' => 'ladovod@gmail.com']);
-    for ($i = 0; $i < 3; $i++) {
+    for ($i = 0; $i < 30; $i++) {
 
         $description = " Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias aliquam aspernatur, culpa dicta, dolor earum eum facere itaque iure iusto molestias nobis non officiis possimus quibusdam quisquam sequi vel, voluptatem!";
 

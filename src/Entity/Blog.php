@@ -148,6 +148,19 @@ class Blog
     return $this;
   }
 
+    public function getUpdatedAtFormated(): ?string
+    {
+        return $this->updatedAt->format('d-m-Y, H:i');
+        //return date('Y-m-d H:i:s', $this->updatedAt);
+    }
+
+//    public function setUpdatedAt(?\DateTime $updatedAt): static
+//    {
+//        $this->updatedAt = $updatedAt;
+//
+//        return $this;
+//    }
+
   public function setText(?string $text): static
   {
     $this->text = $text;
