@@ -17,7 +17,7 @@ class RemoveOldBlogs
     /**
      * @throws \DateMalformedStringException
      */
-    public function getOldBlogs(): array
+    public function getOldBlogs(int $month = 1): array
     {
         //$str_date = "2023-07-14 13:52:00";
 
@@ -26,7 +26,9 @@ class RemoveOldBlogs
         //$month_ago =
         // Пока указан 1 месяц
         // Далее сделать, чтобы было возможность указать в команде кол-во месяцев
-        $date->modify('-1 month');
+
+        $month = -($month);
+        $date->modify("$month month");
         //$date->setTimestamp(strtotime("14-02-2022, 13:52"));
 
         //return $this->blogRepository->findByDate($str_date);
@@ -36,10 +38,13 @@ class RemoveOldBlogs
     /**
      * @throws \DateMalformedStringException
      */
-    public function removeOldBlogs():void {
-        foreach ($this->getOldBlogs() as $blog) {
+    public function removeOldBlogs(int $month = 1): int
+    {
+        $count = count($this->getOldBlogs($month));
+        foreach ($this->getOldBlogs($month) as $blog) {
             $this->entityManager->remove($blog);
         }
         $this->entityManager->flush();
+        return $count;
     }
 }

@@ -15,7 +15,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: 'app:blogs:remove-old',
-    description: 'Add a short description for your command',
+    description: 'Removes inactive blogs older than 1 month or more',
 )]
 class BlogsRemoveOldCommand extends Command
 {
@@ -27,10 +27,10 @@ class BlogsRemoveOldCommand extends Command
 
     protected function configure(): void
     {
-//        $this
-//            ->addArgument('arg1', InputArgument::OPTIONAL, 'Argument description')
-//            ->addOption('option1', null, InputOption::VALUE_NONE, 'Option description')
-//        ;
+        $this
+            //->addArgument('arg1', InputArgument::OPTIONAL, 'Argument description')
+            ->addOption('month', null, InputOption::VALUE_OPTIONAL, 'Set months ago')
+        ;
     }
 
     /**
@@ -38,18 +38,20 @@ class BlogsRemoveOldCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-
-        // @todo - сделать возможнго указывать месяц, то есть сколько месяцев - кол-во
-
+        
         if (!$this->lock()) {
             $output->writeln('The command is already running in another process.');
             return Command::SUCCESS;
         }
-        $this->release();
-       // $blogs = $this->getOldBlogs->getOldBlogs();
-        $this->removeOldBlogs->removeOldBlogs();
+
+        $month = (int) $input->getOption('month');
+
+        $count = $this->removeOldBlogs->removeOldBlogs($month);
         //dd($blogs);
-        $output->writeln('<info>Unactive blogs were removed ...</info>');
+        $info = $count ? "Inactive blogs of count=$count were removed" : "No blogs were removed";
+        $output->writeln("<info> $info ...</info>");
+
+        $this->release();
         return Command::SUCCESS;
     }
 }

@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\Blog;
+use App\Entity\BlogMeta;
 use App\Entity\Page;
 use App\Entity\User;
 use App\Repository\UserRepository;
@@ -31,7 +32,7 @@ class BlogFixtures extends Fixture implements FixtureGroupInterface
   public function load(ObjectManager $manager): void
   {
     $user  = $this->userRepository->findOneBy(['email' => 'ladovod@gmail.com']);
-    for ($i = 0; $i < 30; $i++) {
+    for ($i = 0; $i < 3; $i++) {
 
         $description = " Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias aliquam aspernatur, culpa dicta, dolor earum eum facere itaque iure iusto molestias nobis non officiis possimus quibusdam quisquam sequi vel, voluptatem!";
 
@@ -41,6 +42,13 @@ class BlogFixtures extends Fixture implements FixtureGroupInterface
       $blog->setText('Text ' . $i);
       $blog->setStatus(true);
       $blog->setBlockedAtValue();
+
+      $blog_meta = new BlogMeta();
+      $blog_meta->setDescription($description);
+      $blog_meta->setAuthor($user->getEmail());
+      $blog_meta->setKeywords($description);
+
+      $blog->setBlogMeta($blog_meta);
 
       $manager->persist($blog);
     }
