@@ -21,11 +21,11 @@ class CurrentCurrencyService implements CurrentCurrencyInterface
 
         $code = strtoupper($code);
 
-        // обращаемся к "внешнему сервису"
+        // Обращаемся к "внешнему сервису".
         $currency_data = $this->currencies->getCurrencies();
         $valute_data = json_decode($currency_data, true)['Valute'][$code];
 
-        // отправляем CurrencyValue message c полученным курсом валюты
+        // Отправляем CurrencyValue message c полученным курсом валюты.
         return (new CurrencyValue())->setValue($valute_data['Value']);
     }
 }
