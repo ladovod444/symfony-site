@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package grpc.currency;
+
+message CurrencyCode {
+  string code = 1;
+}
+
+message CurrencyValue {
+  float value = 1;
+}
+
+service CurrentCurrency {
+  rpc report (CurrencyCode) returns (CurrencyValue) {
+  }
+}

@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package grpc.digits;
+
+message DigitsNumber {
+  int32 digits = 1;
+}
+
+message DigitsGenerated {
+  repeated int32 digits = 2;
+}
+
+service DigitsGenerator {
+  rpc generator (DigitsNumber) returns (DigitsGenerated) {
+  }
+}
